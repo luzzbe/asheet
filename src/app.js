@@ -45,6 +45,13 @@ app.use("/", indexRouter);
 app.use("/auth", usersRouter);
 app.use("/projects", projectsRouter);
 
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
+
+// 404 handling
 app.all("*", (req, res, next) => {
   res.status(404).send("404");
 });
