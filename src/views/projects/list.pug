@@ -1,0 +1,22 @@
+extends ../layout.pug
+
+block vars
+  - var title="projects list"
+
+block content
+  h2 Projects list
+  
+  if projects
+    table.table
+      each project in projects
+        tr 
+          td= project.name 
+          td 
+            a.btn.btn-primary(href="/project/" + project._id) view
+          td 
+            a.btn.btn-danger(href="/project/" + project._id + "/delete") delete
+  
+  p
+    a.btn.btn-primary(href="/projects/new") Create a project
+  p
+    a.btn.btn-secondary(href="/auth/logout") Logout
