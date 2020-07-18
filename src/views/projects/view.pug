@@ -13,6 +13,6 @@ block content
     ul
       each endpoint in project.endpoints
         li
-          a(href=`/api/${project._id}/${endpoint.slug}`)= `${endpoint.name} (${endpoint.slug})`
+          a(href=`/projects/${project._id}/json/${endpoint.slug}`)= `${endpoint.name} (${endpoint.slug})`
   else
     p Please click on sync to start

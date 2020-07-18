@@ -1,4 +1,5 @@
 const camelCase = require("camelcase");
+const asyncHandler = require("express-async-handler");
 const Project = require("../models/project");
 const {
   getSpreadsheetTabs,
@@ -9,12 +10,12 @@ const {
 const User = require("../models/user");
 const { oauth2Client } = require("../google");
 
-exports.project_list = async (req, res) => {
+exports.project_list = asyncHandler(async (req, res) => {
   const projects = await Project.find({ user: req.session.user._id });
   res.render("projects/list", { projects });
-};
+});
 
-exports.project_detail = async (req, res) => {
+exports.project_detail = asyncHandler(async (req, res) => {
   const project = await Project.findOne({
     _id: req.params.id,
     user: req.session.user._id,
@@ -25,9 +26,9 @@ exports.project_detail = async (req, res) => {
   }
 
   res.render("projects/view", { project });
-};
+});
 
-exports.project_sync = async (req, res) => {
+exports.project_sync = asyncHandler(async (req, res) => {
   const project = await Project.findOne({
     _id: req.params.id,
     user: req.session.user._id,
@@ -41,21 +42,21 @@ exports.project_sync = async (req, res) => {
   project.save();
 
   res.redirect("/projects/" + project._id);
-};
+});
 
-exports.project_delete = async (req, res) => {
+exports.project_delete = asyncHandler(async (req, res) => {
   await Project.findOneAndDelete({
     _id: req.params.id,
     user: req.session.user._id,
   });
   res.redirect("/projects");
-};
+});
 
-exports.project_create_get = async (req, res) => {
+exports.project_create_get = (req, res) => {
   res.render("projects/create");
 };
 
-exports.project_create_post = async (req, res) => {
+exports.project_create_post = asyncHandler(async (req, res) => {
   const projectData = {
     name: req.body.name,
     spreadsheet: extractIdFromURI(req.body.url),
@@ -64,9 +65,9 @@ exports.project_create_post = async (req, res) => {
 
   await Project.create(projectData);
   res.redirect("/projects");
-};
+});
 
-exports.project_endpoint_get = async (req, res) => {
+exports.project_endpoint_get = asyncHandler(async (req, res) => {
   const project = await Project.findOne({
     _id: req.params.id,
   });
@@ -125,4 +126,4 @@ exports.project_endpoint_get = async (req, res) => {
   }
 
   res.json(items);
-};
+});

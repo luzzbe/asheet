@@ -45,6 +45,10 @@ app.use("/", indexRouter);
 app.use("/auth", usersRouter);
 app.use("/projects", projectsRouter);
 
+app.all("*", (req, res, next) => {
+  res.status(404).send("404");
+});
+
 app.listen(port, () => {
   console.log("Server listening on port " + port);
 });
