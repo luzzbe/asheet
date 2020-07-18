@@ -1,14 +1,20 @@
 const camelCase = require("camelcase");
-const Project = require("./project");
+const Project = require("../models/project");
 const {
   getSpreadsheetTabs,
   getWorksheetContent,
   extractIdFromURI,
   formatData,
 } = require("../spreadsheet");
-const User = require("../user/user");
+const User = require("../models/user");
 const { oauth2Client } = require("../google");
-const getProjectHandle = async (req, res) => {
+
+exports.project_list = async (req, res) => {
+  const projects = await Project.find({ user: req.session.user._id });
+  res.render("projects/list", { projects });
+};
+
+exports.project_detail = async (req, res) => {
   const project = await Project.findOne({
     _id: req.params.id,
     user: req.session.user._id,
@@ -21,7 +27,7 @@ const getProjectHandle = async (req, res) => {
   res.render("projects/view", { project });
 };
 
-const syncProjectHandle = async (req, res) => {
+exports.project_sync = async (req, res) => {
   const project = await Project.findOne({
     _id: req.params.id,
     user: req.session.user._id,
@@ -34,15 +40,10 @@ const syncProjectHandle = async (req, res) => {
   project.endpoints = await getSpreadsheetTabs(project.spreadsheet);
   project.save();
 
-  res.redirect("/project/" + project._id);
+  res.redirect("/projects/" + project._id);
 };
 
-const getProjectsHandle = async (req, res) => {
-  const projects = await Project.find({ user: req.session.user._id });
-  res.render("projects/list", { projects });
-};
-
-const deleteProjectHandle = async (req, res) => {
+exports.project_delete = async (req, res) => {
   await Project.findOneAndDelete({
     _id: req.params.id,
     user: req.session.user._id,
@@ -50,20 +51,24 @@ const deleteProjectHandle = async (req, res) => {
   res.redirect("/projects");
 };
 
-const createProjectHandle = async (req, res) => {
+exports.project_create_get = async (req, res) => {
+  res.render("projects/create");
+};
+
+exports.project_create_post = async (req, res) => {
   const projectData = {
     name: req.body.name,
     spreadsheet: extractIdFromURI(req.body.url),
     user: req.session.user._id,
   };
 
-  const project = await Project.create(projectData);
+  await Project.create(projectData);
   res.redirect("/projects");
 };
 
-const getProjectEndpointHandle = async (req, res) => {
+exports.project_endpoint_get = async (req, res) => {
   const project = await Project.findOne({
-    _id: req.params.project,
+    _id: req.params.id,
   });
 
   const user = await User.findById(project.user);
@@ -99,36 +104,25 @@ const getProjectEndpointHandle = async (req, res) => {
     });
   }
 
-  const items = [];
-
-  if (worksheetData && worksheetData.length >= 2) {
-    const labels = worksheetData[0];
-
-    // Loop on data (without labels)
-    for (let i = 1; i < worksheetData.length; i++) {
-      const row = {};
-      const rowData = worksheetData[i];
-
-      labels.forEach((label, index) => {
-        row[camelCase(label)] = formatData(rowData[index]);
-      });
-
-      items.push(row);
-    }
-
-    res.json(items);
-  } else {
+  if (!worksheetData || worksheetData.length < 2) {
     res.json({
       error: "the table must contain at least 2 lines (header and contents)",
     });
   }
-};
 
-module.exports = {
-  createProjectHandle,
-  getProjectsHandle,
-  deleteProjectHandle,
-  getProjectHandle,
-  syncProjectHandle,
-  getProjectEndpointHandle,
+  const items = [];
+  const labels = worksheetData[0];
+
+  for (let i = 1; i < worksheetData.length; i++) {
+    const row = {};
+    const rowData = worksheetData[i];
+
+    labels.forEach((label, index) => {
+      row[camelCase(label)] = formatData(rowData[index]);
+    });
+
+    items.push(row);
+  }
+
+  res.json(items);
 };

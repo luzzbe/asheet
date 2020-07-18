@@ -1,8 +1,8 @@
 const { google } = require("googleapis");
 const { oauth2Client } = require("../google");
-const User = require("./user");
+const User = require("../models/user");
 
-const login = (req, res) => {
+exports.user_login = (req, res) => {
   // URL generation
   const url = oauth2Client.generateAuthUrl({
     access_type: "offline",
@@ -16,7 +16,7 @@ const login = (req, res) => {
   res.redirect(url);
 };
 
-const loginHandle = async (req, res) => {
+exports.user_login_callback = async (req, res) => {
   if (req.query.error) {
     return res.send("Error: An error occurred, please try again later.");
   }
@@ -55,12 +55,12 @@ const loginHandle = async (req, res) => {
   }
 };
 
-const logoutHandle = (req, res) => {
+exports.user_logout = (req, res) => {
   req.session.user = null;
   res.redirect("/");
 };
 
-const isLoggedIn = (req, res, next) => {
+exports.verify_login = (req, res, next) => {
   if (req.session.user) {
     oauth2Client.setCredentials({
       access_token: req.session.user.accessToken,
@@ -70,5 +70,3 @@ const isLoggedIn = (req, res, next) => {
   }
   res.redirect("/");
 };
-
-module.exports = { login, loginHandle, logoutHandle, isLoggedIn };

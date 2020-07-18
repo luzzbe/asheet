@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server.js",
-    "watch": "nodemon src/server.js"
+    "start": "node src/app.js",
+    "watch": "nodemon src/app.js"
   },
   "author": "",
   "license": "ISC",
