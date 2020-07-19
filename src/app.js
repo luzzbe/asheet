@@ -13,7 +13,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const projectsRouter = require("./routes/projects");
 
-app.set("view engine", "pug");
+app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 
 // setup database
@@ -41,6 +41,10 @@ app.use(
   })
 );
 
+// Serve static files
+app.use(express.static(__dirname + '/public'));
+
+// App Routes
 app.use("/", indexRouter);
 app.use("/auth", usersRouter);
 app.use("/projects", projectsRouter);

@@ -9,7 +9,7 @@ exports.extractIdFromURI = (uri) => {
     "https://docs.google.com/spreadsheets/d/(.*)/edit.*"
   );
 
-  return regex.exec(uri)[1];
+  return regex.exec(uri)[1] || null;
 };
 
 exports.getWorksheetContent = async (spreadsheet, worksheet) => {

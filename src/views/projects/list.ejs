@@ -1,0 +1,14 @@
+<%- include("../_header") -%>
+
+<div class="container">
+  <h2>Project list</h2>
+  <% if(projects) { %>
+    <% projects.forEach(project => { %>
+      <a href="/projects/<%= project._id %>"><%= project.name %></a>
+    <% }); %>
+  <% } else { %>
+    <p>You don't have any project.</p>
+  <% } %>
+</div>
+
+<%- include("../_footer") -%>

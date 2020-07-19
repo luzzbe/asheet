@@ -1,0 +1,15 @@
+<%- include("../_header") -%>
+
+<div class="container">
+  <h2>Project: <%= project.name %></h2>
+  <% if(project.endpoints) { %>
+    <% project.endpoints.forEach(endpoint => { %>
+      <a href="/projects/<%= project._id %>/json/<%= endpoint.slug %>"><%= endpoint.name %></a>
+    <% }); %>
+  <% } else { %>
+    <p>You don't have any endpoint.</p>
+  <% } %>
+  <p><a href="/projects/<%= project._id %>/sync">Sync</a></p>
+</div>
+
+<%- include("../_footer") -%>

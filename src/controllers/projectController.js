@@ -12,7 +12,7 @@ const { oauth2Client } = require("../google");
 
 exports.project_list = asyncHandler(async (req, res) => {
   const projects = await Project.find({ user: req.session.user._id });
-  res.render("projects/list", { projects });
+  res.render("projects/list", { title: "Project list", projects });
 });
 
 exports.project_detail = asyncHandler(async (req, res) => {
@@ -25,7 +25,7 @@ exports.project_detail = asyncHandler(async (req, res) => {
     return res.redirect("/projects");
   }
 
-  res.render("projects/view", { project });
+  res.render("projects/view", { title: "Project details", project });
 });
 
 exports.project_sync = asyncHandler(async (req, res) => {
@@ -53,7 +53,7 @@ exports.project_delete = asyncHandler(async (req, res) => {
 });
 
 exports.project_create_get = (req, res) => {
-  res.render("projects/create");
+  res.render("projects/create", { title: "Create a project" });
 };
 
 exports.project_create_post = asyncHandler(async (req, res) => {
