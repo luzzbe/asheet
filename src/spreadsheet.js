@@ -4,7 +4,7 @@ const { oauth2Client } = require("./google");
 
 const sheets = new google.sheets({ version: "v4", auth: oauth2Client });
 
-const extractIdFromURI = (uri) => {
+exports.extractIdFromURI = (uri) => {
   const regex = new RegExp(
     "https://docs.google.com/spreadsheets/d/(.*)/edit.*"
   );
@@ -12,7 +12,7 @@ const extractIdFromURI = (uri) => {
   return regex.exec(uri)[1];
 };
 
-const getWorksheetContent = async (spreadsheet, worksheet) => {
+exports.getWorksheetContent = async (spreadsheet, worksheet) => {
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: spreadsheet,
     range: `${worksheet}!A1:ZZZ`,
@@ -20,7 +20,7 @@ const getWorksheetContent = async (spreadsheet, worksheet) => {
   return res.data.values;
 };
 
-const getSpreadsheetTabs = async (spreadsheet) => {
+exports.getSpreadsheetTabs = async (spreadsheet) => {
   const response = await sheets.spreadsheets.get({
     spreadsheetId: spreadsheet,
   });
@@ -35,17 +35,10 @@ const getSpreadsheetTabs = async (spreadsheet) => {
   return tabsList;
 };
 
-const formatData = (str) => {
+exports.formatData = (str) => {
   if (str === undefined) return "";
   if (str.toLowerCase() == "true") return true;
   if (str.toLowerCase() == "false") return false;
 
   return parseFloat(str) || str;
-};
-
-module.exports = {
-  getSpreadsheetTabs,
-  getWorksheetContent,
-  extractIdFromURI,
-  formatData,
 };
