@@ -1,14 +1,14 @@
 <%- include("../_header") -%> <%- include("../_backend") -%>
 
 <header class="bg-white shadow">
-  <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+  <div class="container">
     <h1 class="text-xl font-bold leading-tight text-gray-900">
       New Project
     </h1>
   </div>
 </header>
 <main>
-  <div class="py-6 px-8">
+  <div class="container">
     <form action="/projects/create" method="POST">
       <div class="form-group">
         <label
@@ -38,10 +38,7 @@
           class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
         />
       </div>
-      <button
-        type="submit"
-        class="px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-teal-600"
-      >
+      <button type="submit" class="btn-primary mt-2">
         Create
       </button>
     </form>

@@ -1,29 +1,24 @@
 <%- include("../_header") -%> <%- include("../_backend") -%>
 
 <header class="bg-white shadow">
-  <div
-    class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center"
-  >
+  <div class="container flex justify-between items-center">
     <h1 class="text-xl font-bold leading-tight text-gray-900">
       Projects
     </h1>
-    <a
-      href="/projects/create"
-      class="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-teal-600 hover:bg-teal-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-    >
+    <a href="/projects/create" class="btn-primary">
       New Project
     </a>
   </div>
 </header>
 
 <main>
-  <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+  <div class="container">
     <% if(projects.length) { %>
     <div class="flex flex-wrap -m-2">
       <% projects.forEach(project => { %>
-      <div class="block w-1/3 overflow-hidden p-2">
+      <div class="block w-full sm:w-1/2 md:w-1/3 overflow-hidden p-2">
         <div class="px-6 py-4 bg-white shadow-md rounded">
-          <h3 class="font-bold text-xl mb-2">
+          <h3 class="font-bold text- mb-2">
             <%= project.name %>
           </h3>
           <div class="flex justify-between items-center">
@@ -34,9 +29,7 @@
             <% } else { %>
             <p class="text-gray-700">0 endpoint</p>
             <% } %>
-            <a
-              href="/projects/<%= project._id %>"
-              class="text-teal-900 font-bold px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded ml-4"
+            <a href="/projects/<%= project._id %>" class="btn-secondary"
               >Manage</a
             >
           </div>
