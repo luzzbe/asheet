@@ -19,6 +19,7 @@
     "express-async-handler": "^1.1.4",
     "express-session": "^1.17.1",
     "googleapis": "^54.1.0",
+    "helmet": "^3.23.3",
     "mongodb": "^3.5.9",
     "mongoose": "^5.9.24"
   },

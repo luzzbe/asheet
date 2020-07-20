@@ -1,28 +1,51 @@
-<%- include("../_header") -%>
+<%- include("../_header") -%> <%- include("../_backend") -%>
 
-<div class="container">
-  <h2>New project</h2>
-  <form action="/projects/create" method="POST">
-    <div class="form-group">
-      <label for="project-name">Project Name</label>
-      <input
-        id="project-name"
-        type="text"
-        name="name"
-        placeholder="My Project"
-      />
-    </div>
-    <div class="form-group">
-      <label for="project-url">Spreadsheet URI</label>
-      <input
-        id="project-url"
-        type="text"
-        name="url"
-        placeholder="https://docs.google..."
-      />
-    </div>
-    <button type="submit" class="btn btn-primary">Create</button>
-  </form>
-</div>
+<header class="bg-white shadow">
+  <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+    <h1 class="text-xl font-bold leading-tight text-gray-900">
+      New Project
+    </h1>
+  </div>
+</header>
+<main>
+  <div class="py-6 px-8">
+    <form action="/projects/create" method="POST">
+      <div class="form-group">
+        <label
+          for="project-name"
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          >Project Name</label
+        >
+        <input
+          id="project-name"
+          type="text"
+          name="name"
+          placeholder="My Project"
+          class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        />
+      </div>
+      <div class="form-group">
+        <label
+          for="project-url"
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          >Spreadsheet URI</label
+        >
+        <input
+          id="project-url"
+          type="text"
+          name="url"
+          placeholder="https://docs.google..."
+          class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        />
+      </div>
+      <button
+        type="submit"
+        class="px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-teal-600"
+      >
+        Create
+      </button>
+    </form>
+  </div>
+</main>
 
 <%- include("../_footer") -%>

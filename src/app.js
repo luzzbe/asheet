@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const MongoStore = require("connect-mongo")(session);
+const helmet = require("helmet");
 
 require("dotenv").config();
 
@@ -35,6 +36,9 @@ app.use(
   })
 );
 
+//setup helmet
+app.use(helmet());
+
 app.use(
   bodyParser.urlencoded({
     extended: false,
@@ -42,7 +46,12 @@ app.use(
 );
 
 // Serve static files
-app.use(express.static(__dirname + '/public'));
+app.use(
+  express.static(__dirname + "/public", {
+    etag: true,
+    lastModified: true,
+  })
+);
 
 // App Routes
 app.use("/", indexRouter);

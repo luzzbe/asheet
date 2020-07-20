@@ -1,15 +1,56 @@
-<%- include("../_header") -%>
+<%- include("../_header") -%> <%- include("../_backend") -%>
 
-<div class="container">
-  <h2>Project: <%= project.name %></h2>
-  <% if(project.endpoints) { %>
-    <% project.endpoints.forEach(endpoint => { %>
-      <a href="/projects/<%= project._id %>/json/<%= endpoint.slug %>"><%= endpoint.name %></a>
-    <% }); %>
-  <% } else { %>
-    <p>You don't have any endpoint.</p>
-  <% } %>
-  <p><a href="/projects/<%= project._id %>/sync">Sync</a></p>
-</div>
+<header class="bg-white shadow">
+  <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+    <h1 class="text-xl font-bold leading-tight text-gray-900">
+      <%= project.name %>
+    </h1>
+  </div>
+</header>
+
+<main>
+  <div class="py-6 px-8">
+    <div class="bg-white rounded shadow-md">
+      <div class="py-4 px-4 lg:flex lg:items-center lg:justify-between">
+        <p class="text-sm">
+          If you have changed the structure of the Google Sheet click on sync to
+          update.
+        </p>
+        <div class="mt-8 flex lg:flex-shrink-0 lg:mt-0">
+          <div class="inline-flex rounded-md shadow">
+            <a
+              href="/projects/<%= project._id %>/sync"
+              class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-teal-600 hover:bg-teal-500 focus:outline-none focus:shadow-outline font-bold"
+            >
+              Sync
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% if(project.endpoints) { %>
+    <div class="bg-white rounded shadow-md mt-6 py-4 px-4">
+      <% project.endpoints.forEach(endpoint => { %>
+      <div class="mb-2">
+        <div class="bg-gray-800 text-white px-4 py-2 rounded-t font-bold">
+          <%= endpoint.name %>
+        </div>
+        <div class="border px-4 py-3 text-teal-800 rounded-b">
+          <a
+            href="/projects/<%= project._id %>/json/<%= endpoint.slug %>"
+            target="_blank"
+            >/projects/<%= project._id %>/json/<%= endpoint.slug %></a
+          >
+        </div>
+      </div>
+      <% }); %>
+    </div>
+    <% } else { %>
+    <p class="text-center text-xl py-6 leading-relaxed text-gray-700">
+      You don't have any endpoint. <br />Add tabs to the table and click sync.
+    </p>
+    <% } %>
+  </div>
+</main>
 
 <%- include("../_footer") -%>

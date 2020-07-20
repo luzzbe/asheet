@@ -29,7 +29,11 @@ exports.project_detail = asyncHandler(async (req, res) => {
     return res.redirect("/projects");
   }
 
-  res.render("projects/view", { title: "Project details", project });
+  res.render("projects/view", {
+    title: "Project details",
+    user: req.session.user,
+    project,
+  });
 });
 
 exports.project_sync = asyncHandler(async (req, res) => {
@@ -57,7 +61,10 @@ exports.project_delete = asyncHandler(async (req, res) => {
 });
 
 exports.project_create_get = (req, res) => {
-  res.render("projects/create", { title: "Create a project" });
+  res.render("projects/create", {
+    title: "Create a project",
+    user: req.session.user,
+  });
 };
 
 exports.project_create_post = asyncHandler(async (req, res) => {
@@ -67,8 +74,8 @@ exports.project_create_post = asyncHandler(async (req, res) => {
     user: req.session.user._id,
   };
 
-  await Project.create(projectData);
-  res.redirect("/projects");
+  const project = await Project.create(projectData);
+  res.redirect("/projects/" + project._id);
 });
 
 exports.project_endpoint_get = asyncHandler(async (req, res) => {
