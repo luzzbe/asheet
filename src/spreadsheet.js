@@ -16,6 +16,7 @@ exports.getWorksheetContent = async (spreadsheet, worksheet) => {
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: spreadsheet,
     range: `${worksheet}!A1:ZZZ`,
+    valueRenderOption: "UNFORMATTED_VALUE",
   });
   return res.data.values;
 };
@@ -33,12 +34,4 @@ exports.getSpreadsheetTabs = async (spreadsheet) => {
   }));
 
   return tabsList;
-};
-
-exports.formatData = (str) => {
-  if (str === undefined) return "";
-  if (str.toLowerCase() == "true") return true;
-  if (str.toLowerCase() == "false") return false;
-
-  return parseFloat(str) || str;
 };

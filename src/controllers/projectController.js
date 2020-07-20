@@ -5,7 +5,6 @@ const {
   getSpreadsheetTabs,
   getWorksheetContent,
   extractIdFromURI,
-  formatData,
 } = require("../spreadsheet");
 const User = require("../models/user");
 const { oauth2Client } = require("../google");
@@ -132,7 +131,7 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
     row.id = i + 1;
 
     labels.forEach((label, index) => {
-      row[camelCase(label)] = formatData(rowData[index]);
+      row[camelCase(label)] = rowData[index] || "";
     });
 
     items.push(row);
