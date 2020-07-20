@@ -12,7 +12,11 @@ const { oauth2Client } = require("../google");
 
 exports.project_list = asyncHandler(async (req, res) => {
   const projects = await Project.find({ user: req.session.user._id });
-  res.render("projects/list", { title: "Project list", projects });
+  res.render("projects/list", {
+    title: "Project list",
+    projects,
+    user: req.session.user,
+  });
 });
 
 exports.project_detail = asyncHandler(async (req, res) => {
@@ -117,6 +121,8 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
   for (let i = 1; i < worksheetData.length; i++) {
     const row = {};
     const rowData = worksheetData[i];
+
+    row.id = i + 1;
 
     labels.forEach((label, index) => {
       row[camelCase(label)] = formatData(rowData[index]);
