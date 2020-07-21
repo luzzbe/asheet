@@ -12,6 +12,13 @@ router.get("/:id/sync", verify_login, project_controller.project_sync);
 router.get("/:id/delete", verify_login, project_controller.project_delete);
 
 // API
-router.get("/:id/json/:endpoint", project_controller.project_endpoint_get);
+router.get(
+  "/:projectId/json/:endpoint",
+  project_controller.project_endpoint_get_all
+);
+router.get(
+  "/:projectId/json/:endpoint/:itemId",
+  project_controller.project_endpoint_get
+);
 
 module.exports = router;

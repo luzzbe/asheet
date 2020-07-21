@@ -12,38 +12,50 @@
     </div>
   </header>
 
+  <%- include("../_flash") -%>
+
   <main>
     <div class="container">
       <div class="bg-white rounded shadow-md">
-        <div class="py-4 px-4 lg:flex lg:items-center lg:justify-between">
+        <div class="py-4 px-4 md:flex md:items-center md:justify-between">
           <p class="text-sm">
             If you have changed the structure of the Google Sheet click on sync
             to update.
           </p>
-          <div class="mt-8 flex lg:flex-shrink-0 lg:mt-0">
-            <div class="inline-flex rounded-md shadow">
-              <a href="/projects/<%= project._id %>/sync" class="btn-primary">
-                Sync
-              </a>
-            </div>
+          <div class="mt-4 flex md:flex-shrink-0 md:mt-0">
+            <a href="/projects/<%= project._id %>/sync" class="btn-primary">
+              Sync
+            </a>
           </div>
         </div>
       </div>
       <% if(project.endpoints) { %>
-      <div class="bg-white rounded shadow-md mt-6 py-4 px-4">
+      <div class="mt-6">
         <h2 class="text-xl pt-2 pb-4">
           <%=project.endpoints.length%> endpoint(s)
         </h2>
         <% project.endpoints.forEach(endpoint => { %>
-        <div class="mb-2">
+        <div class="mb-2 bg-white">
           <div class="bg-gray-800 text-white px-4 py-2 rounded-t font-bold">
             <%= endpoint.name %>
           </div>
-          <div class="border px-4 py-3 text-teal-800 rounded-b">
+          <div class="border px-2 py-4 text-gray-800 rounded-b">
             <a
               href="/projects/<%= project._id %>/json/<%= endpoint.slug %>"
               target="_blank"
-              >/projects/<%= project._id %>/json/<%= endpoint.slug %></a
+              class="block bg-gray-200 rounded px-2 py-2 mb-1"
+              ><span class="font-bold text-green-700">GET</span> /projects/<%=
+              project._id %>/json/<%= endpoint.slug %></a
+            >
+            <a
+              href="/projects/<%= project._id %>/json/<%= endpoint.slug %>/2"
+              target="_blank"
+              class="block bg-gray-200 rounded px-2 py-2"
+              ><span class="font-bold text-green-700">GET</span> /projects/<%=
+              project._id %>/json/<%= endpoint.slug %>/<span
+                class="text-red-700"
+                >{id}</span
+              ></a
             >
           </div>
         </div>

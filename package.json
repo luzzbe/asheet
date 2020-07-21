@@ -1,5 +1,5 @@
 {
-  "name": "nsheet",
+  "name": "flasheet",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@tailwindcss/typography": "^0.2.0",
     "body-parser": "^1.19.0",
     "camelcase": "^6.0.0",
     "connect-mongo": "^3.2.0",

@@ -31,7 +31,6 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false },
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
   })
 );
@@ -39,6 +38,7 @@ app.use(
 //setup helmet
 app.use(helmet());
 
+// setup form parser
 app.use(
   bodyParser.urlencoded({
     extended: false,
@@ -52,6 +52,15 @@ app.use(
     lastModified: true,
   })
 );
+
+// pass variables to our templates + all requests
+app.use((req, res, next) => {
+  res.locals.flash = req.session.flash;
+  delete req.session.flash;
+  res.locals.user = req.session.user || null;
+  res.locals.currentPath = req.path;
+  next();
+});
 
 // App Routes
 app.use("/", indexRouter);

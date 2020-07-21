@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { google } = require("googleapis");
-const { oauth2Client } = require("../google");
+const { oauth2Client } = require("../services/google");
 const User = require("../models/user");
 
 exports.user_login = (req, res) => {
