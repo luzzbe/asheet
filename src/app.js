@@ -4,6 +4,7 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const MongoStore = require("connect-mongo")(session);
 const helmet = require("helmet");
+const cors = require("cors");
 
 require("dotenv").config();
 
@@ -34,6 +35,9 @@ app.use(
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
   })
 );
+
+// setup cors
+app.use(cors());
 
 //setup helmet
 app.use(helmet());
