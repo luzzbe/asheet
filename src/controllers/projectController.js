@@ -107,8 +107,9 @@ exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
   );
 
   if (!endpoint) {
-    return res.json({
-      error: "the endpoint you requested does not exist",
+    return res.status(404).json({
+      success: false,
+      message: "the endpoint you requested does not exist",
     });
   }
 
@@ -120,14 +121,16 @@ exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
     );
   } catch (e) {
     return res.json({
-      error:
+      success: false,
+      message:
         "unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize",
     });
   }
 
   if (!worksheetData || worksheetData.length < 2) {
     res.json({
-      error: "the table must contain at least 2 lines (header and contents)",
+      success: false,
+      message: "the table must contain at least 2 lines (header and contents)",
     });
   }
 
@@ -147,7 +150,7 @@ exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
     items.push(row);
   }
 
-  res.json(items);
+  res.json({ success: true, data: items });
 });
 
 exports.project_endpoint_get = asyncHandler(async (req, res) => {
@@ -171,7 +174,8 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
 
   if (!endpoint) {
     return res.json({
-      error: "the endpoint you requested does not exist",
+      success: false,
+      message: "the endpoint you requested does not exist",
     });
   }
 
@@ -183,7 +187,8 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
     );
   } catch (e) {
     return res.json({
-      error:
+      success: false,
+      message:
         "unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize",
     });
   }
@@ -219,5 +224,5 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
     item[camelCase(label)] = rowData[index] || "";
   });
 
-  res.json(item);
+  res.json({ success: true, data: item });
 });
