@@ -19185,6 +19185,13 @@ video {
   transition-delay: 1000ms;
 }
 
+#particles-js {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+}
+
 @media (min-width: 640px) {
   .sm\:container {
     width: 100%;
