@@ -1,28 +1,31 @@
 <%- include("_header") %>
 
-<div class="container">
-  <nav class="py-2">
-    <h1 class="text-3xl font-bold"><a href="/"><i class="fas fa-bolt"></i> flasheet</a></h1>
-  </nav>
+<div class="bg-gray-900 text-white">
+  <div class="container">
+    <nav class="py-2">
+      <h1 class="text-3xl font-bold">
+        <a href="/"><i class="fas fa-bolt text-yellow-500"></i> flasheet</a>
+      </h1>
+    </nav>
 
-  <header class="text-center py-6">
-    <h2 class="text-6xl font-bold leading-tight">
-      Instantly turn your <span class="text-green-600">Google Sheet</span> <br /><span
-        class="text-5xl"
-        >into an API.</span
-      >
-    </h2>
-    <p class="text-xl py-4">
-      Launch your application, website, or whatever at the speed of light!
-    </p>
-    <div class="pt-4 pb-6">
-      <a
-        class="btn-primary py-4"
-        href="/auth/google"
-        ><i class="fab fa-google"></i> Sign In with Google</a
-      >
-    </div>
-  </header>
+    <header class="text-center py-6">
+      <h2 class="text-6xl font-bold leading-tight">
+        Instantly turn your <span class="text-green-400">Google Sheet</span>
+        <br /><span class="text-5xl">into an API.</span>
+      </h2>
+      <p class="text-xl py-4">
+        Launch your application, website, or whatever at the speed of light!
+      </p>
+      <div class="pt-4 pb-6">
+        <a class="btn-secondary py-4" href="/auth/google"
+          ><i class="fab fa-google"></i> Sign In with Google</a
+        >
+      </div>
+    </header>
+  </div>
+  <main>
+    <img src="/images/hero.png" alt="Turn your google sheet into an api" />
+  </main>
 </div>
 
 <%- include("_footer") %>
