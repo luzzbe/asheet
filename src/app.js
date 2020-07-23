@@ -14,6 +14,7 @@ const port = process.env.PORT || 3000;
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const projectsRouter = require("./routes/projects");
+const apiRouter = require("./routes/api");
 
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
@@ -70,6 +71,7 @@ app.use((req, res, next) => {
 app.use("/", indexRouter);
 app.use("/auth", usersRouter);
 app.use("/projects", projectsRouter);
+app.use("/api", apiRouter);
 
 // Error handling
 app.use((err, req, res, next) => {

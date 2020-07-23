@@ -41,19 +41,18 @@
           </div>
           <div class="border px-2 py-4 text-gray-800 rounded-b">
             <a
-              href="/projects/<%= project._id %>/json/<%= endpoint.slug %>"
+              href="/api/<%= project._id %>/<%= endpoint.slug %>"
               target="_blank"
               class="block bg-gray-200 rounded px-2 py-2 mb-1"
-              ><span class="font-bold text-green-700">GET</span> /projects/<%=
-              project._id %>/json/<%= endpoint.slug %></a
+              ><span class="font-bold text-green-700">GET</span> /api/<%=
+              project._id %>/<%= endpoint.slug %></a
             >
             <a
-              href="/projects/<%= project._id %>/json/<%= endpoint.slug %>/2"
+              href="/api/<%= project._id %>/<%= endpoint.slug %>/2"
               target="_blank"
               class="block bg-gray-200 rounded px-2 py-2"
-              ><span class="font-bold text-green-700">GET</span> /projects/<%=
-              project._id %>/json/<%= endpoint.slug %>/<span
-                class="text-red-700"
+              ><span class="font-bold text-green-700">GET</span> /api/<%=
+              project._id %>/<%= endpoint.slug %>/<span class="text-red-700"
                 >{id}</span
               ></a
             >

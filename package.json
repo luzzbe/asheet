@@ -23,6 +23,7 @@
     "express-session": "^1.17.1",
     "googleapis": "^54.1.0",
     "helmet": "^3.23.3",
+    "memory-cache": "^0.2.0",
     "mongodb": "^3.5.9",
     "mongoose": "^5.9.24",
     "tailwindcss": "^1.5.1"

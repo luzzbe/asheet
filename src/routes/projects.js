@@ -11,14 +11,4 @@ router.get("/:id", verify_login, project_controller.project_detail);
 router.get("/:id/sync", verify_login, project_controller.project_sync);
 router.get("/:id/delete", verify_login, project_controller.project_delete);
 
-// API
-router.get(
-  "/:projectId/json/:endpoint",
-  project_controller.project_endpoint_get_all
-);
-router.get(
-  "/:projectId/json/:endpoint/:itemId",
-  project_controller.project_endpoint_get
-);
-
 module.exports = router;
