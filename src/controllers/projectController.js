@@ -195,7 +195,8 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
 
   if (!worksheetData || worksheetData.length < 2) {
     res.json({
-      error: "the table must contain at least 2 lines (header and contents)",
+      success: false,
+      message: "the table must contain at least 2 lines (header and contents)",
     });
   }
 
@@ -206,7 +207,8 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
 
   if (itemId < 2) {
     return res.status(404).json({
-      error: "record not found",
+      success: false,
+      message: "record not found",
     });
   }
 
