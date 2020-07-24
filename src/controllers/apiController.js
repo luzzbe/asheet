@@ -9,29 +9,22 @@ const {
   appendWorksheet,
 } = require("../services/spreadsheet");
 
-// test
-
-exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
-  if (cache.get(req.path)) {
-    return res.json(cache.get(req.path));
-  }
-
+const validateInputData = async (req, res) => {
   const project = await Project.findOne({
     _id: req.params.projectId,
   });
 
+  if (!project) {
+    return error(res, 404, "the project you requested does not exist");
+  }
+
   const user = await User.findById(project.user);
 
-  user.remainingRequests--;
-  user.save();
-
-  oauth2Client.setCredentials({
-    access_token: user.acessToken,
-    refresh_token: user.refreshToken,
-  });
-
-  if (!project) {
-    return res.redirect("/projects");
+  if (user) {
+    oauth2Client.setCredentials({
+      access_token: user.acessToken,
+      refresh_token: user.refreshToken,
+    });
   }
 
   const endpoint = project.endpoints.find(
@@ -39,11 +32,29 @@ exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
   );
 
   if (!endpoint) {
-    return res.status(404).json({
-      success: false,
-      message: "the endpoint you requested does not exist",
-    });
+    return error(res, 404, "the endpoint you requested does not exist");
   }
+
+  return { user, project, endpoint };
+};
+
+const error = (res, statusCode, message) => {
+  res.status(statusCode).json({
+    success: false,
+    message,
+  });
+};
+
+// Retreive all items from a spreadsheet
+exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
+  if (cache.get(req.path)) {
+    return res.json(cache.get(req.path));
+  }
+
+  const { user, project, endpoint } = await validateInputData(req, res);
+
+  user.remainingRequests--;
+  user.save();
 
   let worksheetData;
   try {
@@ -52,18 +63,19 @@ exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
       endpoint.name
     );
   } catch (e) {
-    return res.json({
-      success: false,
-      message:
-        "unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize",
-    });
+    return error(
+      res,
+      400,
+      "unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize"
+    );
   }
 
   if (!worksheetData || worksheetData.length < 2) {
-    res.json({
-      success: false,
-      message: "the table must contain at least 2 lines (header and contents)",
-    });
+    return error(
+      res,
+      400,
+      "the table must contain at least 2 lines (header and contents)"
+    );
   }
 
   const items = [];
@@ -93,39 +105,16 @@ exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
   res.json(response);
 });
 
+// Retreive one item from a spreadsheet
 exports.project_endpoint_get = asyncHandler(async (req, res) => {
   if (cache.get(req.path)) {
     return res.json(ache.get(req.path));
   }
 
-  const project = await Project.findOne({
-    _id: req.params.projectId,
-  });
-
-  const user = await User.findById(project.user);
+  const { user, project, endpoint } = await validateInputData(req, res);
 
   user.remainingRequests--;
   user.save();
-
-  oauth2Client.setCredentials({
-    access_token: user.acessToken,
-    refresh_token: user.refreshToken,
-  });
-
-  if (!project) {
-    return res.redirect("/projects");
-  }
-
-  const endpoint = project.endpoints.find(
-    (endpoint) => endpoint.slug === req.params.endpoint
-  );
-
-  if (!endpoint) {
-    return res.json({
-      success: false,
-      message: "the endpoint you requested does not exist",
-    });
-  }
 
   let worksheetData = [];
   try {
@@ -134,18 +123,19 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
       endpoint.name
     );
   } catch (e) {
-    return res.json({
-      success: false,
-      message:
-        "unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize",
-    });
+    return error(
+      res,
+      500,
+      "unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize"
+    );
   }
 
   if (!worksheetData || worksheetData.length < 2) {
-    res.json({
-      success: false,
-      message: "the table must contain at least 2 lines (header and contents)",
-    });
+    return error(
+      res,
+      400,
+      "the table must contain at least 2 lines (header and contents)"
+    );
   }
 
   const item = {};
@@ -154,18 +144,13 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
   const itemId = parseInt(req.params.itemId);
 
   if (itemId < 2) {
-    return res.status(404).json({
-      success: false,
-      message: "record not found",
-    });
+    return error(res, 400, "invalid item id");
   }
 
   const rowData = worksheetData[itemId - 2] || null;
 
   if (!rowData) {
-    return res.status(404).json({
-      error: "record not found",
-    });
+    return error(res, 404, "record not found");
   }
 
   item.id = itemId;
@@ -185,35 +170,12 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
   res.json(response);
 });
 
+// Append data to a spreadsheet
 exports.project_endpoint_post = asyncHandler(async (req, res) => {
-  const project = await Project.findOne({
-    _id: req.params.projectId,
-  });
-
-  const user = await User.findById(project.user);
+  const { user, project } = await retreiveUserAndProject(req);
 
   user.remainingRequests--;
   user.save();
-
-  oauth2Client.setCredentials({
-    access_token: user.acessToken,
-    refresh_token: user.refreshToken,
-  });
-
-  if (!project) {
-    return res.redirect("/projects");
-  }
-
-  const endpoint = project.endpoints.find(
-    (endpoint) => endpoint.slug === req.params.endpoint
-  );
-
-  if (!endpoint) {
-    return res.json({
-      success: false,
-      message: "the endpoint you requested does not exist",
-    });
-  }
 
   let data = [];
 
