@@ -1,31 +1,31 @@
-const asyncHandler = require("express-async-handler");
-const { google } = require("googleapis");
-const { oauth2Client } = require("../services/google");
-const User = require("../models/user");
+const asyncHandler = require('express-async-handler');
+const { google } = require('googleapis');
+const { oauth2Client } = require('../services/google');
+const User = require('../models/user');
 
-exports.user_login = (req, res) => {
+exports.userLogin = (req, res) => {
   // URL generation
   const url = oauth2Client.generateAuthUrl({
-    access_type: "offline",
+    access_type: 'offline',
     scope: [
-      "https://www.googleapis.com/auth/userinfo.profile",
-      "https://www.googleapis.com/auth/userinfo.email",
-      "https://www.googleapis.com/auth/spreadsheets",
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/spreadsheets',
     ],
   });
   // Redirection to the login page
   res.redirect(url);
 };
 
-exports.user_login_callback = asyncHandler(async (req, res, next) => {
+exports.userLoginCallback = asyncHandler(async (req, res, next) => {
   if (req.query.error) {
-    return next("An error occurred, please try again later.");
+    return next('An error occurred, please try again later.');
   }
 
   const { tokens } = await oauth2Client.getToken(req.query.code);
   oauth2Client.setCredentials(tokens);
 
-  const oauth2 = new google.oauth2("v2");
+  const oauth2 = new google.oauth2('v2');
   // Retreive user info
   const { data } = await oauth2.userinfo.get({ auth: oauth2Client });
 
@@ -41,7 +41,7 @@ exports.user_login_callback = asyncHandler(async (req, res, next) => {
   if (tokens.refresh_token) userData.refreshToken = tokens.refresh_token;
 
   // Update or create the user
-  let user = await User.findOneAndUpdate({ googleID: data.id }, userData, {
+  const user = await User.findOneAndUpdate({ googleID: data.id }, userData, {
     new: true,
     upsert: true,
   });
@@ -49,15 +49,15 @@ exports.user_login_callback = asyncHandler(async (req, res, next) => {
   // Save the access token to a session
   req.session.user = user;
 
-  res.redirect("/projects");
+  return res.redirect('/projects');
 });
 
-exports.user_logout = (req, res) => {
+exports.userLogout = (req, res) => {
   req.session.user = null;
-  res.redirect("/");
+  return res.redirect('/');
 };
 
-exports.verify_login = (req, res, next) => {
+exports.verifyLogin = (req, res, next) => {
   if (req.session.user) {
     oauth2Client.setCredentials({
       access_token: req.session.user.accessToken,
@@ -65,5 +65,5 @@ exports.verify_login = (req, res, next) => {
     });
     return next();
   }
-  res.redirect("/");
+  return res.redirect('/');
 };

@@ -1,13 +1,10 @@
-const { google } = require("googleapis");
-const camelCase = require("camelcase");
-const { oauth2Client } = require("./google");
+const { google } = require('googleapis');
+const { oauth2Client } = require('./google');
 
-const sheets = new google.sheets({ version: "v4", auth: oauth2Client });
+const sheets = new google.sheets({ version: 'v4', auth: oauth2Client });
 
 exports.extractIdFromURI = (uri) => {
-  const regex = new RegExp(
-    "https://docs.google.com/spreadsheets/d/(.*)/edit.*"
-  );
+  const regex = new RegExp('https://docs.google.com/spreadsheets/d/(.*)/edit.*');
 
   const match = regex.exec(uri);
 
@@ -18,11 +15,25 @@ exports.extractIdFromURI = (uri) => {
   return match[1];
 };
 
+exports.getWorksheetLabels = async (spreadsheet, worksheet) => {
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: spreadsheet,
+    range: `${worksheet}!A1:ZZZ1`,
+    valueRenderOption: 'UNFORMATTED_VALUE',
+  });
+
+  if (!res.data.values) {
+    return false;
+  }
+
+  return res.data.values[0];
+};
+
 exports.getWorksheetContent = async (spreadsheet, worksheet) => {
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: spreadsheet,
-    range: `${worksheet}!A1:ZZZ`,
-    valueRenderOption: "UNFORMATTED_VALUE",
+    range: `${worksheet}!A2:ZZZ`,
+    valueRenderOption: 'UNFORMATTED_VALUE',
   });
   return res.data.values;
 };
@@ -32,12 +43,7 @@ exports.getSpreadsheetTabs = async (spreadsheet) => {
     spreadsheetId: spreadsheet,
   });
   const tabs = response.data.sheets;
-  const tabsList = tabs.map(({ properties }) => ({
-    name: properties.title,
-    slug: camelCase(properties.title),
-    index: properties.index,
-    sheetId: properties.sheetId,
-  }));
+  const tabsList = tabs.map(({ properties }) => properties.title);
 
   return tabsList;
 };
@@ -46,10 +52,10 @@ exports.appendWorksheet = async (spreadsheet, worksheet, data) => {
   const res = await sheets.spreadsheets.values.append({
     spreadsheetId: spreadsheet,
     range: `${worksheet}!A1:ZZZ`,
-    valueInputOption: "RAW",
+    valueInputOption: 'RAW',
     resource: {
       values: [data],
     },
   });
-  console.log(res);
+  return res;
 };

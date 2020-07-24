@@ -1,83 +1,88 @@
-const asyncHandler = require("express-async-handler");
-const cache = require("memory-cache");
-const camelCase = require("camelcase");
-const Project = require("../models/project");
-const User = require("../models/user");
-const { oauth2Client } = require("../services/google");
+const asyncHandler = require('express-async-handler');
+const cache = require('memory-cache');
+const camelCase = require('camelcase');
+const Project = require('../models/project');
+const User = require('../models/user');
+const { oauth2Client } = require('../services/google');
 const {
   getWorksheetContent,
   appendWorksheet,
-} = require("../services/spreadsheet");
+} = require('../services/spreadsheet');
 
-exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
-  if (cache.get(req.path)) {
-    return res.json(cache.get(req.path));
-  }
+const error = (res, statusCode, message) => {
+  res.status(statusCode).json({
+    success: false,
+    message,
+  });
+};
 
+const validateInputData = async (req, res) => {
   const project = await Project.findOne({
     _id: req.params.projectId,
   });
 
+  if (!project) {
+    return error(res, 404, 'the project you requested does not exist');
+  }
+
   const user = await User.findById(project.user);
 
-  user.remainingRequests--;
-  user.save();
-
-  oauth2Client.setCredentials({
-    access_token: user.acessToken,
-    refresh_token: user.refreshToken,
-  });
-
-  if (!project) {
-    return res.redirect("/projects");
-  }
-
-  const endpoint = project.endpoints.find(
-    (endpoint) => endpoint.slug === req.params.endpoint
-  );
-
-  if (!endpoint) {
-    return res.status(404).json({
-      success: false,
-      message: "the endpoint you requested does not exist",
+  if (user) {
+    oauth2Client.setCredentials({
+      access_token: user.acessToken,
+      refresh_token: user.refreshToken,
     });
   }
+
+  const endpoint = project.endpoints.find((ep) => ep.endpointName === req.params.endpointName);
+
+  if (!endpoint) {
+    return error(res, 404, 'the endpoint you requested does not exist');
+  }
+
+  return { user, project, endpoint };
+};
+
+// Retreive all items from a spreadsheet
+exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
+  if (cache.get(req.path)) {
+    return res.json(cache.get(req.path));
+  }
+
+  const { user, project, endpoint } = await validateInputData(req, res);
+
+  user.remainingRequests -= 1;
+  user.save();
 
   let worksheetData;
   try {
     worksheetData = await getWorksheetContent(
       project.spreadsheet,
-      endpoint.name
+      endpoint.worksheetName,
     );
   } catch (e) {
-    return res.json({
-      success: false,
-      message:
-        "unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize",
-    });
-  }
-
-  if (!worksheetData || worksheetData.length < 2) {
-    res.json({
-      success: false,
-      message: "the table must contain at least 2 lines (header and contents)",
-    });
+    return error(
+      res,
+      400,
+      'unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize',
+    );
   }
 
   const items = [];
-  const labels = worksheetData[0];
+  let id = 2;
 
-  for (let i = 1; i < worksheetData.length; i++) {
+  for (let i = 0; i < worksheetData.length; i += 1) {
     const row = {};
     const rowData = worksheetData[i];
 
-    row.id = i + 1;
-
-    labels.forEach((label, index) => {
-      row[camelCase(label)] = rowData[index] || "";
+    endpoint.schema.forEach((label, index) => {
+      row[camelCase(label)] = rowData[index] || '';
     });
 
+    row.id = id;
+
     items.push(row);
+    id += 1;
   }
 
   const response = {
@@ -88,89 +93,52 @@ exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
 
   cache.put(req.path, response, 5000);
 
-  res.json(response);
+  return res.json(response);
 });
 
-exports.project_endpoint_get = asyncHandler(async (req, res) => {
+// Retreive one item from a spreadsheet
+exports.projectEndpointGet = asyncHandler(async (req, res) => {
   if (cache.get(req.path)) {
-    return res.json(ache.get(req.path));
+    return res.json(cache.get(req.path));
   }
 
-  const project = await Project.findOne({
-    _id: req.params.projectId,
-  });
+  const { user, project, endpoint } = await validateInputData(req, res);
 
-  const user = await User.findById(project.user);
-
-  user.remainingRequests--;
+  user.remainingRequests -= 1;
   user.save();
-
-  oauth2Client.setCredentials({
-    access_token: user.acessToken,
-    refresh_token: user.refreshToken,
-  });
-
-  if (!project) {
-    return res.redirect("/projects");
-  }
-
-  const endpoint = project.endpoints.find(
-    (endpoint) => endpoint.slug === req.params.endpoint
-  );
-
-  if (!endpoint) {
-    return res.json({
-      success: false,
-      message: "the endpoint you requested does not exist",
-    });
-  }
 
   let worksheetData = [];
   try {
     worksheetData = await getWorksheetContent(
       project.spreadsheet,
-      endpoint.name
+      endpoint.worksheetName,
     );
   } catch (e) {
-    return res.json({
-      success: false,
-      message:
-        "unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize",
-    });
-  }
-
-  if (!worksheetData || worksheetData.length < 2) {
-    res.json({
-      success: false,
-      message: "the table must contain at least 2 lines (header and contents)",
-    });
+    return error(
+      res,
+      500,
+      'unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize',
+    );
   }
 
   const item = {};
-  const labels = worksheetData[0];
-  worksheetData.shift(); // Remove labels from table
-  const itemId = parseInt(req.params.itemId);
+  const itemId = parseInt(req.params.itemId, 10);
 
-  if (itemId < 2) {
-    return res.status(404).json({
-      success: false,
-      message: "record not found",
-    });
+  if (itemId <= 0) {
+    return error(res, 400, 'invalid item id');
   }
 
   const rowData = worksheetData[itemId - 2] || null;
 
   if (!rowData) {
-    return res.status(404).json({
-      error: "record not found",
-    });
+    return error(res, 404, 'record not found');
   }
 
-  item.id = itemId;
-
-  labels.forEach((label, index) => {
-    item[camelCase(label)] = rowData[index] || "";
+  endpoint.schema.forEach((label, index) => {
+    item[camelCase(label)] = rowData[index] || '';
   });
+
+  item.id = itemId;
 
   const response = {
     success: true,
@@ -180,41 +148,44 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
 
   cache.put(req.path, response, 5000);
 
-  res.json(response);
+  return res.json(response);
 });
 
-exports.project_endpoint_post = asyncHandler(async (req, res) => {
-  const project = await Project.findOne({
-    _id: req.params.projectId,
+// Append data to a spreadsheet
+exports.projectEndpointPost = asyncHandler(async (req, res) => {
+  const { user, project, endpoint } = await validateInputData(req, res);
+
+  const reqData = req.body;
+  const data = [];
+
+  endpoint.schema.forEach((label) => {
+    if (reqData[label]) {
+      data.push(reqData[label]);
+    } else {
+      data.push('');
+    }
   });
 
-  const user = await User.findById(project.user);
+  try {
+    // try to add new record to the table
+    await appendWorksheet(project.spreadsheet, endpoint.worksheetName, data);
+  } catch (e) {
+    return error(
+      res,
+      500,
+      'unable to update the table',
+    );
+  }
 
-  user.remainingRequests--;
+  user.remainingRequests -= 1;
   user.save();
 
-  oauth2Client.setCredentials({
-    access_token: user.acessToken,
-    refresh_token: user.refreshToken,
+  cache.del(req.path);
+
+  return res.status(201).json({
+    success: true,
+    info: {
+      remainingRequests: user.remainingRequests,
+    },
   });
-
-  if (!project) {
-    return res.redirect("/projects");
-  }
-
-  const endpoint = project.endpoints.find(
-    (endpoint) => endpoint.slug === req.params.endpoint
-  );
-
-  if (!endpoint) {
-    return res.json({
-      success: false,
-      message: "the endpoint you requested does not exist",
-    });
-  }
-
-  let data = [];
-
-  await appendWorksheet(project.spreadsheet, endpoint.name, data);
-  res.json(req.body);
 });

@@ -1,75 +1,106 @@
-const asyncHandler = require("express-async-handler");
-const Project = require("../models/project");
+const asyncHandler = require('express-async-handler');
+const camelCase = require('camelcase');
+const Project = require('../models/project');
 const {
   getSpreadsheetTabs,
   extractIdFromURI,
-} = require("../services/spreadsheet");
+  getWorksheetLabels,
+} = require('../services/spreadsheet');
 
-const { flash } = require("../services/flash");
+const { flash } = require('../services/flash');
+const camelcase = require('camelcase');
 
-exports.project_list = asyncHandler(async (req, res) => {
+exports.projectList = asyncHandler(async (req, res) => {
   const projects = await Project.find({ user: req.session.user._id });
-  res.render("projects/list", {
-    title: "Project list",
+  return res.render('projects/list', {
+    title: 'Project list',
     projects,
   });
 });
 
-exports.project_detail = asyncHandler(async (req, res) => {
+exports.projectDetail = asyncHandler(async (req, res) => {
   const project = await Project.findOne({
     _id: req.params.id,
     user: req.session.user._id,
   });
 
   if (!project) {
-    return res.redirect("/projects");
+    return res.redirect('/projects');
   }
 
-  res.render("projects/view", {
-    title: "Project details",
+  return res.render('projects/view', {
+    title: 'Project details',
     project,
   });
 });
 
-exports.project_sync = asyncHandler(async (req, res) => {
+exports.projectSync = asyncHandler(async (req, res) => {
   const project = await Project.findOne({
     _id: req.params.id,
     user: req.session.user._id,
   });
 
   if (!project) {
-    return res.redirect("/projects");
+    return res.redirect('/projects');
   }
 
-  project.endpoints = await getSpreadsheetTabs(project.spreadsheet);
+  // retreive worksheets from spreadsheet
+  let worksheets = await getSpreadsheetTabs(project.spreadsheet);
+
+  // retreive labels from worksheets
+  const workPool = [];
+  for (let i = 0; i < worksheets.length; i += 1) {
+    workPool.push(getWorksheetLabels(project.spreadsheet, worksheets[i]));
+  }
+
+  // wait all responses from google
+  let worksheetsLabels = await Promise.all(workPool);
+
+  // remove worksheet whithout schema
+  worksheets = worksheets.filter((_, i) => worksheetsLabels[i] && worksheetsLabels[i].length > 0);
+
+  // remove corresponding labels
+  worksheetsLabels = worksheetsLabels.filter(
+    (_, i) => worksheetsLabels[i] && worksheetsLabels[i].length > 0,
+  );
+
+  // camelCase all labels
+  worksheetsLabels = worksheetsLabels
+    .map((w) => w.map((l) => camelCase(l)));
+
+  // map and add schema name and schema detail to each endpoint
+  project.endpoints = worksheets.map((w, i) => (
+    { worksheetName: w, endpointName: camelCase(w), schema: worksheetsLabels[i] }));
+
+  // save the project
   project.save();
 
-  flash(req, "Project synced", "green");
+  flash(req, 'Project synced', 'green');
 
-  res.redirect("/projects/" + project._id);
+  return res.redirect(`/projects/${project._id}`);
 });
 
-exports.project_delete = asyncHandler(async (req, res) => {
+exports.projectDelete = asyncHandler(async (req, res) => {
   await Project.findOneAndDelete({
     _id: req.params.id,
     user: req.session.user._id,
   });
-  flash(req, "Project deleted", "green");
-  res.redirect("/projects");
+  flash(req, 'Project deleted', 'green');
+  return res.redirect('/projects');
 });
 
-exports.project_create_get = (req, res) => {
-  res.render("projects/create", {
-    title: "Create a project",
+exports.projectCreateGet = (req, res) => {
+  res.render('projects/create', {
+    title: 'Create a project',
   });
 };
 
-exports.project_create_post = asyncHandler(async (req, res) => {
+exports.projectCreatePost = asyncHandler(async (req, res) => {
   const sheetId = extractIdFromURI(req.body.url);
 
   if (!sheetId) {
-    flash(req, "Invalid Google Sheet URI", "red");
-    return res.redirect("/projects/create");
+    flash(req, 'Invalid Google Sheet URI', 'red');
+    return res.redirect('/projects/create');
   }
 
   const projectData = {
@@ -80,6 +111,6 @@ exports.project_create_post = asyncHandler(async (req, res) => {
 
   const project = await Project.create(projectData);
 
-  flash(req, "Project created", "green");
-  res.redirect("/projects/" + project._id);
+  flash(req, 'Project created', 'green');
+  return res.redirect(`/projects/${project._id}`);
 });
