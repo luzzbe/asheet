@@ -1,4 +1,4 @@
-exports.flash = (req, message, type = "green") => {
+exports.flash = (req, message, type = 'green') => {
   req.session.flash = {
     message,
     type,

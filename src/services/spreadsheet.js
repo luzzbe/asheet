@@ -1,13 +1,11 @@
-const { google } = require("googleapis");
-const camelCase = require("camelcase");
-const { oauth2Client } = require("./google");
+const { google } = require('googleapis');
+const camelCase = require('camelcase');
+const { oauth2Client } = require('./google');
 
-const sheets = new google.sheets({ version: "v4", auth: oauth2Client });
+const sheets = new google.sheets({ version: 'v4', auth: oauth2Client });
 
 exports.extractIdFromURI = (uri) => {
-  const regex = new RegExp(
-    "https://docs.google.com/spreadsheets/d/(.*)/edit.*"
-  );
+  const regex = new RegExp('https://docs.google.com/spreadsheets/d/(.*)/edit.*');
 
   const match = regex.exec(uri);
 
@@ -22,7 +20,7 @@ exports.getWorksheetContent = async (spreadsheet, worksheet) => {
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: spreadsheet,
     range: `${worksheet}!A1:ZZZ`,
-    valueRenderOption: "UNFORMATTED_VALUE",
+    valueRenderOption: 'UNFORMATTED_VALUE',
   });
   return res.data.values;
 };
@@ -46,10 +44,10 @@ exports.appendWorksheet = async (spreadsheet, worksheet, data) => {
   const res = await sheets.spreadsheets.values.append({
     spreadsheetId: spreadsheet,
     range: `${worksheet}!A1:ZZZ`,
-    valueInputOption: "RAW",
+    valueInputOption: 'RAW',
     resource: {
       values: [data],
     },
   });
-  console.log(res);
+  return res;
 };

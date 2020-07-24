@@ -44,7 +44,7 @@ const validateInputData = async (req, res) => {
 };
 
 // Retreive all items from a spreadsheet
-exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
+exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
   if (cache.get(req.path)) {
     return res.json(cache.get(req.path));
   }
@@ -104,7 +104,7 @@ exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
 });
 
 // Retreive one item from a spreadsheet
-exports.project_endpoint_get = asyncHandler(async (req, res) => {
+exports.projectEndpointGet = asyncHandler(async (req, res) => {
   if (cache.get(req.path)) {
     return res.json(cache.get(req.path));
   }
@@ -169,7 +169,7 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
 });
 
 // Append data to a spreadsheet
-exports.project_endpoint_post = asyncHandler(async (req, res) => {
+exports.projectEndpointPost = asyncHandler(async (req, res) => {
   const { user, project, endpoint } = await validateInputData(req, res);
 
   user.remainingRequests -= 1;
