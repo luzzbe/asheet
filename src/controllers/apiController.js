@@ -126,7 +126,7 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
     return error(res, 400, 'invalid item id');
   }
 
-  const rowData = worksheetData[itemId + 1] || null;
+  const rowData = worksheetData[itemId] || null;
 
   if (!rowData) {
     return error(res, 404, 'record not found');
