@@ -3,8 +3,8 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 
-router.get('/google', userController.user_login);
-router.get('/google/callback', userController.user_login_callback);
-router.get('/logout', userController.user_logout);
+router.get('/google', userController.userLogin);
+router.get('/google/callback', userController.userLoginCallback);
+router.get('/logout', userController.userLogout);
 
 module.exports = router;
