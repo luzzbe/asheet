@@ -1,11 +1,14 @@
 const asyncHandler = require('express-async-handler');
+const camelCase = require('camelcase');
 const Project = require('../models/project');
 const {
   getSpreadsheetTabs,
   extractIdFromURI,
+  getWorksheetLabels,
 } = require('../services/spreadsheet');
 
 const { flash } = require('../services/flash');
+const camelcase = require('camelcase');
 
 exports.projectList = asyncHandler(async (req, res) => {
   const projects = await Project.find({ user: req.session.user._id });
@@ -41,7 +44,35 @@ exports.projectSync = asyncHandler(async (req, res) => {
     return res.redirect('/projects');
   }
 
-  project.endpoints = await getSpreadsheetTabs(project.spreadsheet);
+  // retreive worksheets from spreadsheet
+  let worksheets = await getSpreadsheetTabs(project.spreadsheet);
+
+  // retreive labels from worksheets
+  const workPool = [];
+  for (let i = 0; i < worksheets.length; i += 1) {
+    workPool.push(getWorksheetLabels(project.spreadsheet, worksheets[i]));
+  }
+
+  // wait all responses from google
+  let worksheetsLabels = await Promise.all(workPool);
+
+  // remove worksheet whithout schema
+  worksheets = worksheets.filter((_, i) => worksheetsLabels[i] && worksheetsLabels[i].length > 0);
+
+  // remove corresponding labels
+  worksheetsLabels = worksheetsLabels.filter(
+    (_, i) => worksheetsLabels[i] && worksheetsLabels[i].length > 0,
+  );
+
+  // camelCase all labels
+  worksheetsLabels = worksheetsLabels
+    .map((w) => w.map((l) => camelCase(l)));
+
+  // map and add schema name and schema detail to each endpoint
+  project.endpoints = worksheets.map((w, i) => (
+    { worksheetName: w, endpointName: camelCase(w), schema: worksheetsLabels[i] }));
+
+  // save the project
   project.save();
 
   flash(req, 'Project synced', 'green');

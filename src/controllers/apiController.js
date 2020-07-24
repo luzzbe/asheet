@@ -34,7 +34,7 @@ const validateInputData = async (req, res) => {
     });
   }
 
-  const endpoint = project.endpoints.find((path) => path.slug === req.params.endpoint);
+  const endpoint = project.endpoints.find((ep) => ep.endpointName === req.params.endpointName);
 
   if (!endpoint) {
     return error(res, 404, 'the endpoint you requested does not exist');
@@ -58,7 +58,7 @@ exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
   try {
     worksheetData = await getWorksheetContent(
       project.spreadsheet,
-      endpoint.name,
+      endpoint.worksheetName,
     );
   } catch (e) {
     return error(
@@ -68,24 +68,15 @@ exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
     );
   }
 
-  if (!worksheetData || worksheetData.length < 2) {
-    return error(
-      res,
-      400,
-      'the table must contain at least 2 lines (header and contents)',
-    );
-  }
-
   const items = [];
-  const labels = worksheetData[0];
 
-  for (let i = 1; i < worksheetData.length; i += 1) {
+  for (let i = 0; i < worksheetData.length; i += 1) {
     const row = {};
     const rowData = worksheetData[i];
 
     row.id = i + 1;
 
-    labels.forEach((label, index) => {
+    endpoint.schema.forEach((label, index) => {
       row[camelCase(label)] = rowData[index] || '';
     });
 
@@ -118,7 +109,7 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
   try {
     worksheetData = await getWorksheetContent(
       project.spreadsheet,
-      endpoint.name,
+      endpoint.worksheetName,
     );
   } catch (e) {
     return error(
@@ -128,24 +119,14 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
     );
   }
 
-  if (!worksheetData || worksheetData.length < 2) {
-    return error(
-      res,
-      400,
-      'the table must contain at least 2 lines (header and contents)',
-    );
-  }
-
   const item = {};
-  const labels = worksheetData[0];
-  worksheetData.shift(); // Remove labels from table
   const itemId = parseInt(req.params.itemId, 10);
 
-  if (itemId < 2) {
+  if (itemId <= 0) {
     return error(res, 400, 'invalid item id');
   }
 
-  const rowData = worksheetData[itemId - 2] || null;
+  const rowData = worksheetData[itemId + 1] || null;
 
   if (!rowData) {
     return error(res, 404, 'record not found');
@@ -153,7 +134,7 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
 
   item.id = itemId;
 
-  labels.forEach((label, index) => {
+  endpoint.schema.forEach((label, index) => {
     item[camelCase(label)] = rowData[index] || '';
   });
 
@@ -172,11 +153,37 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
 exports.projectEndpointPost = asyncHandler(async (req, res) => {
   const { user, project, endpoint } = await validateInputData(req, res);
 
+  const reqData = req.body;
+  const data = [];
+
+  endpoint.schema.forEach((label) => {
+    if (reqData[label]) {
+      data.push(reqData[label]);
+    } else {
+      data.push('');
+    }
+  });
+
+  try {
+    // try to add new record to the table
+    await appendWorksheet(project.spreadsheet, endpoint.worksheetName, data);
+  } catch (e) {
+    return error(
+      res,
+      500,
+      'unable to update the table',
+    );
+  }
+
   user.remainingRequests -= 1;
   user.save();
 
-  const data = [];
+  cache.del(req.path);
 
-  await appendWorksheet(project.spreadsheet, endpoint.name, data);
-  return res.json(req.body);
+  return res.status(201).json({
+    success: true,
+    info: {
+      remainingRequests: user.remainingRequests,
+    },
+  });
 });

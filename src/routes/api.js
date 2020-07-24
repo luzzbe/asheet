@@ -15,8 +15,8 @@ router.use(bodyParser.json());
 // Rate limiting
 router.use(limiter);
 
-router.get('/:projectId/:endpoint', apiController.projectEndpointGetAll);
-router.get('/:projectId/:endpoint/:itemId', apiController.projectEndpointGet);
-router.post('/:projectId/:endpoint', apiController.projectEndpointPost);
+router.get('/:projectId/:endpointName', apiController.projectEndpointGetAll);
+router.get('/:projectId/:endpointName/:itemId', apiController.projectEndpointGet);
+router.post('/:projectId/:endpointName', apiController.projectEndpointPost);
 
 module.exports = router;

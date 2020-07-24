@@ -65,7 +65,8 @@ app.use('/projects', projectsRouter);
 app.use('/api', apiRouter);
 
 // Error handling
-app.use((err, req, res) => {
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
   // eslint-disable-next-line no-console
   console.error(err.stack);
   res.status(500).send('Something broke!');
