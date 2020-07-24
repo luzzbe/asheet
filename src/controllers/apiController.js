@@ -69,18 +69,20 @@ exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
   }
 
   const items = [];
+  let id = 2;
 
   for (let i = 0; i < worksheetData.length; i += 1) {
     const row = {};
     const rowData = worksheetData[i];
 
-    row.id = i + 1;
-
     endpoint.schema.forEach((label, index) => {
       row[camelCase(label)] = rowData[index] || '';
     });
 
+    row.id = id;
+
     items.push(row);
+    id += 1;
   }
 
   const response = {
@@ -126,17 +128,17 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
     return error(res, 400, 'invalid item id');
   }
 
-  const rowData = worksheetData[itemId - 1] || null;
+  const rowData = worksheetData[itemId - 2] || null;
 
   if (!rowData) {
     return error(res, 404, 'record not found');
   }
 
-  item.id = itemId;
-
   endpoint.schema.forEach((label, index) => {
     item[camelCase(label)] = rowData[index] || '';
   });
+
+  item.id = itemId;
 
   const response = {
     success: true,
