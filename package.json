@@ -30,6 +30,9 @@
     "tailwindcss": "^1.5.1"
   },
   "devDependencies": {
+    "eslint": "^7.5.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
     "nodemon": "^2.0.4",
     "stylelint-config-recommended": "^3.0.0"
   }
