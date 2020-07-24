@@ -4,7 +4,10 @@ const camelCase = require("camelcase");
 const Project = require("../models/project");
 const User = require("../models/user");
 const { oauth2Client } = require("../services/google");
-const { getWorksheetContent } = require("../services/spreadsheet");
+const {
+  getWorksheetContent,
+  appendWorksheet,
+} = require("../services/spreadsheet");
 
 exports.project_endpoint_get_all = asyncHandler(async (req, res) => {
   if (cache.get(req.path)) {
@@ -178,4 +181,40 @@ exports.project_endpoint_get = asyncHandler(async (req, res) => {
   cache.put(req.path, response, 5000);
 
   res.json(response);
+});
+
+exports.project_endpoint_post = asyncHandler(async (req, res) => {
+  const project = await Project.findOne({
+    _id: req.params.projectId,
+  });
+
+  const user = await User.findById(project.user);
+
+  user.remainingRequests--;
+  user.save();
+
+  oauth2Client.setCredentials({
+    access_token: user.acessToken,
+    refresh_token: user.refreshToken,
+  });
+
+  if (!project) {
+    return res.redirect("/projects");
+  }
+
+  const endpoint = project.endpoints.find(
+    (endpoint) => endpoint.slug === req.params.endpoint
+  );
+
+  if (!endpoint) {
+    return res.json({
+      success: false,
+      message: "the endpoint you requested does not exist",
+    });
+  }
+
+  let data = [];
+
+  await appendWorksheet(project.spreadsheet, endpoint.name, data);
+  res.json(req.body);
 });

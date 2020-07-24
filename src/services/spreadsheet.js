@@ -41,3 +41,15 @@ exports.getSpreadsheetTabs = async (spreadsheet) => {
 
   return tabsList;
 };
+
+exports.appendWorksheet = async (spreadsheet, worksheet, data) => {
+  const res = await sheets.spreadsheets.values.append({
+    spreadsheetId: spreadsheet,
+    range: `${worksheet}!A1:ZZZ`,
+    valueInputOption: "RAW",
+    resource: {
+      values: [data],
+    },
+  });
+  console.log(res);
+};
