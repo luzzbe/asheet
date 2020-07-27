@@ -1,5 +1,4 @@
 const asyncHandler = require('express-async-handler');
-const cache = require('memory-cache');
 const camelCase = require('camelcase');
 const Project = require('../models/project');
 const User = require('../models/user');
@@ -18,7 +17,7 @@ const error = (res, statusCode, message) => {
   });
 };
 
-const validateInputData = async (req, res) => {
+exports.verifyProject = asyncHandler(async (req, res, next) => {
   const project = await Project.findOne({
     _id: req.params.projectId,
   });
@@ -42,16 +41,38 @@ const validateInputData = async (req, res) => {
     return error(res, 404, 'the endpoint you requested does not exist');
   }
 
-  return { user, project, endpoint };
+  req.project = project;
+  req.user = user;
+  req.endpoint = endpoint;
+
+  return next();
+});
+
+exports.verifyMethod = (req, res, next) => {
+  switch (req.method) {
+    case 'GET':
+      if (!req.endpoint.methods.get) return error(res, 400, 'the GET method is disabled');
+      break;
+    case 'POST':
+      if (!req.endpoint.methods.post) return error(res, 400, 'the GET (one) method is disabled');
+      break;
+    case 'PUT':
+      if (!req.endpoint.methods.put) return error(res, 400, 'the PUT method is disabled');
+      break;
+    case 'DELETE':
+      if (!req.endpoint.methods.delete) return error(res, 400, 'the DELETE method is disabled');
+      break;
+
+    default:
+      return error(res, 400, 'the method is invalid');
+  }
+
+  next();
 };
 
 // Retreive all items from a spreadsheet
 exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
-  if (cache.get(req.path)) {
-    return res.json(cache.get(req.path));
-  }
-
-  const { user, project, endpoint } = await validateInputData(req, res);
+  const { user, project, endpoint } = req;
 
   user.remainingRequests -= 1;
   user.save();
@@ -99,18 +120,12 @@ exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
     info: { remainingRequests: user.remainingRequests },
   };
 
-  cache.put(req.path, response, 5000);
-
   return res.json(response);
 });
 
 // Retreive one item from a spreadsheet
 exports.projectEndpointGet = asyncHandler(async (req, res) => {
-  if (cache.get(req.path)) {
-    return res.json(cache.get(req.path));
-  }
-
-  const { user, project, endpoint } = await validateInputData(req, res);
+  const { user, project, endpoint } = req;
 
   user.remainingRequests -= 1;
   user.save();
@@ -129,7 +144,7 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
     );
   }
 
-  const item = {};
+  let item = {};
   const itemId = parseInt(req.params.itemId, 10);
 
   if (itemId <= 0) {
@@ -146,7 +161,11 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
     item[camelCase(label)] = rowData[index] || '';
   });
 
-  item.id = itemId;
+  if (item.id) {
+    item.id = itemId;
+  } else {
+    item = { id: itemId, ...item };
+  }
 
   const response = {
     success: true,
@@ -154,14 +173,12 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
     info: { remainingRequests: user.remainingRequests },
   };
 
-  cache.put(req.path, response, 5000);
-
   return res.json(response);
 });
 
 // Append data to a spreadsheet
 exports.projectEndpointPost = asyncHandler(async (req, res) => {
-  const { user, project, endpoint } = await validateInputData(req, res);
+  const { user, project, endpoint } = req;
 
   const reqData = req.body;
   const data = [];
@@ -188,8 +205,6 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
   user.remainingRequests -= 1;
   user.save();
 
-  cache.del(req.path);
-
   return res.status(201).json({
     success: true,
     info: {
@@ -200,7 +215,7 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
 
 // update column from a worksheet
 exports.projectEndpointUpdate = asyncHandler(async (req, res) => {
-  const { user, project, endpoint } = await validateInputData(req, res);
+  const { user, project, endpoint } = req;
   const itemId = parseInt(req.params.itemId, 10);
 
   if (itemId <= 0) {
@@ -242,7 +257,7 @@ exports.projectEndpointUpdate = asyncHandler(async (req, res) => {
 
 // delete column from a worksheet
 exports.projectEndpointDelete = asyncHandler(async (req, res) => {
-  const { user, project, endpoint } = await validateInputData(req, res);
+  const { user, project, endpoint } = req;
   const itemId = parseInt(req.params.itemId, 10);
 
   if (itemId <= 0) {
