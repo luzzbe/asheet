@@ -18,5 +18,6 @@ router.use(limiter);
 router.get('/:projectId/:endpointName', apiController.projectEndpointGetAll);
 router.get('/:projectId/:endpointName/:itemId', apiController.projectEndpointGet);
 router.post('/:projectId/:endpointName', apiController.projectEndpointPost);
+router.delete('/:projectId/:endpointName/:itemId', apiController.projectEndpointDelete);
 
 module.exports = router;

@@ -59,3 +59,11 @@ exports.appendWorksheet = async (spreadsheet, worksheet, data) => {
   });
   return res;
 };
+
+exports.deleteColumnWorksheet = async (spreadsheet, worksheet, colNum) => {
+  const res = await sheets.spreadsheets.values.clear({
+    spreadsheetId: spreadsheet,
+    range: `${worksheet}!A${colNum}:ZZZ${colNum}`,
+  });
+  return res;
+};

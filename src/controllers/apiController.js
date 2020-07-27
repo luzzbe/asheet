@@ -7,6 +7,7 @@ const { oauth2Client } = require('../services/google');
 const {
   getWorksheetContent,
   appendWorksheet,
+  deleteColumnWorksheet,
 } = require('../services/spreadsheet');
 
 const error = (res, statusCode, message) => {
@@ -72,16 +73,22 @@ exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
   let id = 2;
 
   for (let i = 0; i < worksheetData.length; i += 1) {
-    const row = {};
+    let row = {};
     const rowData = worksheetData[i];
 
-    endpoint.schema.forEach((label, index) => {
-      row[camelCase(label)] = rowData[index] || '';
-    });
+    if (rowData.length > 0) {
+      endpoint.schema.forEach((label, index) => {
+        row[camelCase(label)] = rowData[index] || '';
+      });
 
-    row.id = id;
+      if (row.id) {
+        row.id = id;
+      } else {
+        row = { id, ...row };
+      }
 
-    items.push(row);
+      items.push(row);
+    }
     id += 1;
   }
 
@@ -130,7 +137,7 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
 
   const rowData = worksheetData[itemId - 2] || null;
 
-  if (!rowData) {
+  if (!rowData || rowData.length <= 0) {
     return error(res, 404, 'record not found');
   }
 
@@ -183,6 +190,28 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
   cache.del(req.path);
 
   return res.status(201).json({
+    success: true,
+    info: {
+      remainingRequests: user.remainingRequests,
+    },
+  });
+});
+
+// delete column from a worksheet
+exports.projectEndpointDelete = asyncHandler(async (req, res) => {
+  const { user, project, endpoint } = await validateInputData(req, res);
+  const itemId = parseInt(req.params.itemId, 10);
+
+  if (itemId <= 0) {
+    return error(res, 400, 'invalid item id');
+  }
+
+  deleteColumnWorksheet(project.spreadsheet, endpoint.worksheetName, itemId);
+
+  user.remainingRequests -= 1;
+  user.save();
+
+  return res.status(200).json({
     success: true,
     info: {
       remainingRequests: user.remainingRequests,
