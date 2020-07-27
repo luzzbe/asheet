@@ -41,46 +41,54 @@
               <%= endpoint.endpointName %>
             </div>
             <div class="border px-2 py-2 text-gray-900 rounded-b">
-              <div class="pb-2">
+              <div class="py-2 px-2 border border-dashed rounded mb-2">
+                <p class="text-sm font-medium ml-1 mb-1">Schema</p>
                 <% endpoint.schema.forEach(label => { %>
                 <span class="px-2 py-1 bg-gray-200 font-medium text-gray-900 text-sm rounded"><%= label %></span>
                 <% }) %>
               </div>
-              <span href="/api/<%= project._id %>/<%= endpoint.endpointName %>" target="_blank"
-                class="block bg-green-100 rounded px-2 py-2 mb-1">
-                <input id="get_<%= endpoint.endpointName %>" name="get" type="checkbox" class="h-5 w-5"
+              <!-- GET -->
+              <div class="flex items-center bg-green-100 rounded px-2 py-2 mb-1">
+                <input id="get_<%= endpoint.endpointName %>" name="get" type="checkbox" class="h-5 w-5 mr-2"
                   <%= endpoint.methods.get ? 'checked': '' %>>
                 <label for="get_<%= endpoint.endpointName %>"
-                  class="font-bold text-green-700 w-20 inline-block">GET</label> /api/<%=
-              project._id %>/<%= endpoint.endpointName %></span>
-              <span href="/api/<%= project._id %>/<%= endpoint.endpointName %>/2" target="_blank"
-                class="block bg-green-100 rounded px-2 py-2 mb-1">
-                <input id="getone_<%= endpoint.endpointName %>" name="one" type="checkbox" class="h-5 w-5"
+                  class="font-bold text-green-700 w-20 inline-block">GET</label>
+                <span class="text-sm">/api/<%= project._id %>/<%= endpoint.endpointName %></span>
+              </div>
+              <!-- GET one -->
+              <div class="flex items-center bg-green-100 rounded px-2 py-2 mb-1">
+                <input id="getone_<%= endpoint.endpointName %>" name="one" type="checkbox" class="h-5 w-5 mr-2"
                   <%= endpoint.methods.one ? 'checked': '' %>>
                 <label for="getone_<%= endpoint.endpointName %>"
-                  class="font-bold text-green-700 w-20 inline-block">GET</label> /api/<%=
-              project._id %>/<%= endpoint.endpointName %>/<span class="text-red-700">{id}</span></span>
-              <span href="/api/<%= project._id %>/<%= endpoint.endpointName %>/2" target="_blank"
-                class="block bg-blue-100 rounded px-2 py-2 mb-1">
+                  class="font-bold text-green-700 w-20 inline-block">GET</label>
+                <span class="text-sm">/api/<%= project._id %>/<%= endpoint.endpointName %>/<span
+                    class="text-red-700">{id}</span></span>
+              </div>
+              <!-- POST -->
+              <div class="flex items-center bg-blue-100 rounded px-2 py-2 mb-1">
                 <input id="post_<%= endpoint.endpointName %>" name="post" type="checkbox"
-                  class="h-5 w-5 border-gray-500" <%= endpoint.methods.post ? 'checked': '' %>>
+                  class="h-5 w-5 mr-2 border-gray-500" <%= endpoint.methods.post ? 'checked': '' %>>
                 <label for="post_<%= endpoint.endpointName %>"
-                  class="font-bold text-blue-700 w-20 inline-block">POST</label> /api/<%=
-                project._id %>/<%= endpoint.endpointName %></span>
-              <span href="/api/<%= project._id %>/<%= endpoint.endpointName %>/2" target="_blank"
-                class="block bg-indigo-100 rounded px-2 py-2 mb-1">
-                <input id="put_<%= endpoint.endpointName %>" name="put" type="checkbox" class="h-5 w-5"
+                  class="font-bold text-blue-700 w-20 inline-block">POST</label>
+                <span class="text-sm">/api/<%= project._id %>/<%= endpoint.endpointName %></span>
+              </div>
+              <!-- PUT -->
+              <div class="flex items-center bg-indigo-100 rounded px-2 py-2 mb-1">
+                <input id="put_<%= endpoint.endpointName %>" name="put" type="checkbox" class="h-5 w-5 mr-2"
                   <%= endpoint.methods.put ? 'checked': '' %>>
                 <label for="put_<%= endpoint.endpointName %>"
-                  class="font-bold text-indigo-700 w-20 inline-block">PUT</label> /api/<%=
-                    project._id %>/<%= endpoint.endpointName %></span>
-              <span href="/api/<%= project._id %>/<%= endpoint.endpointName %>/2" target="_blank"
-                class="block bg-red-100 rounded px-2 py-2">
-                <input id="delete_<%= endpoint.endpointName %>" name="delete" type="checkbox" class="h-5 w-5"
+                  class="font-bold text-indigo-700 w-20 inline-block">PUT</label>
+                <span class="text-sm">/api/<%= project._id %>/<%= endpoint.endpointName %></span>
+              </div>
+              <!-- DELETE -->
+              <div class="flex items-center bg-red-100 rounded px-2 py-2">
+                <input id="delete_<%= endpoint.endpointName %>" name="delete" type="checkbox" class="h-5 w-5 mr-2"
                   <%= endpoint.methods.delete ? 'checked': '' %>>
                 <label for="delete_<%= endpoint.endpointName %>"
-                  class="font-bold text-red-700 w-20 inline-block">DELETE</label> /api/<%=
-                project._id %>/<%= endpoint.endpointName %>/<span class="text-red-700">{id}</span></span>
+                  class="font-bold text-red-700 w-20 inline-block">DELETE</label>
+                <span class="text-sm">/api/<%= project._id %>/<%= endpoint.endpointName %>/<span
+                    class="text-red-700">{id}</span></span>
+              </div>
               <button type="submit" class="btn-primary mt-2">Save</button>
             </div>
           </div>
