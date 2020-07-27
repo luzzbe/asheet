@@ -1,6 +1,7 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', () => {
+  // eslint-disable-next-line no-undef
   particlesJS(
-    "particles-js",
+    'particles-js',
 
     {
       particles: {
@@ -12,10 +13,10 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         },
         color: {
-          value: "#ffffff",
+          value: '#ffffff',
         },
         shape: {
-          type: "star",
+          type: 'star',
         },
         opacity: {
           value: 0.3,
@@ -40,17 +41,17 @@ document.addEventListener("DOMContentLoaded", function () {
         line_linked: {
           enable: true,
           distance: 150,
-          color: "#ffffff",
+          color: '#ffffff',
           opacity: 0.4,
           width: 1,
         },
         move: {
           enable: true,
           speed: 6,
-          direction: "none",
+          direction: 'none',
           random: false,
           straight: false,
-          out_mode: "out",
+          out_mode: 'out',
           attract: {
             enable: false,
             rotateX: 600,
@@ -59,15 +60,15 @@ document.addEventListener("DOMContentLoaded", function () {
         },
       },
       interactivity: {
-        detect_on: "canvas",
+        detect_on: 'canvas',
         events: {
           onhover: {
             enable: false,
-            mode: "repulse",
+            mode: 'repulse',
           },
           onclick: {
             enable: false,
-            mode: "push",
+            mode: 'push',
           },
           resize: true,
         },
@@ -76,12 +77,12 @@ document.addEventListener("DOMContentLoaded", function () {
       retina_detect: true,
       config_demo: {
         hide_card: false,
-        background_color: "#b61924",
-        background_image: "",
-        background_position: "50% 50%",
-        background_repeat: "no-repeat",
-        background_size: "cover",
+        background_color: '#b61924',
+        background_image: '',
+        background_position: '50% 50%',
+        background_repeat: 'no-repeat',
+        background_size: 'cover',
       },
-    }
+    },
   );
 });
