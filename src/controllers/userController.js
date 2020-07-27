@@ -57,7 +57,7 @@ exports.userLogout = (req, res) => {
   return res.redirect('/');
 };
 
-exports.verifyLogin = (req, res, next) => {
+exports.verifyLogin = async (req, res, next) => {
   if (req.session.user) {
     oauth2Client.setCredentials({
       access_token: req.session.user.accessToken,

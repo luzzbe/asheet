@@ -8,7 +8,7 @@ const { verifyProject, verifyMethod } = require('../controllers/apiController');
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
-  max: 200,
+  max: 500,
 });
 
 // Parse JSON request
