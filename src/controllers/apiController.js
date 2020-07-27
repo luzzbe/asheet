@@ -67,7 +67,7 @@ exports.verifyMethod = (req, res, next) => {
       return error(res, 400, 'the method is not supported');
   }
 
-  next();
+  return next();
 };
 
 // Retreive all items from a spreadsheet
