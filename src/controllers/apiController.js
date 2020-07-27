@@ -64,7 +64,7 @@ exports.verifyMethod = (req, res, next) => {
       break;
 
     default:
-      return error(res, 400, 'the method is invalid');
+      return error(res, 400, 'the method is not supported');
   }
 
   next();
