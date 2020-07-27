@@ -35,6 +35,10 @@ exports.verifyProject = asyncHandler(async (req, res, next) => {
     });
   }
 
+  if (user.remainingRequests === 0) {
+    return error(res, 429, 'you don\'t have any more requests available, you can buy additional requests on your account');
+  }
+
   const endpoint = project.endpoints.find((ep) => ep.endpointName === req.params.endpointName);
 
   if (!endpoint) {
