@@ -60,6 +60,18 @@ exports.appendWorksheet = async (spreadsheet, worksheet, data) => {
   return res;
 };
 
+exports.updateColumnWorksheet = async (spreadsheet, worksheet, colNum, data) => {
+  const res = await sheets.spreadsheets.values.update({
+    spreadsheetId: spreadsheet,
+    range: `${worksheet}!A${colNum}:ZZZ${colNum}`,
+    valueInputOption: 'RAW',
+    resource: {
+      values: [data],
+    },
+  });
+  return res;
+};
+
 exports.deleteColumnWorksheet = async (spreadsheet, worksheet, colNum) => {
   const res = await sheets.spreadsheets.values.clear({
     spreadsheetId: spreadsheet,

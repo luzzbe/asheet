@@ -8,6 +8,7 @@ const {
   getWorksheetContent,
   appendWorksheet,
   deleteColumnWorksheet,
+  updateColumnWorksheet,
 } = require('../services/spreadsheet');
 
 const error = (res, statusCode, message) => {
@@ -190,6 +191,48 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
   cache.del(req.path);
 
   return res.status(201).json({
+    success: true,
+    info: {
+      remainingRequests: user.remainingRequests,
+    },
+  });
+});
+
+// update column from a worksheet
+exports.projectEndpointUpdate = asyncHandler(async (req, res) => {
+  const { user, project, endpoint } = await validateInputData(req, res);
+  const itemId = parseInt(req.params.itemId, 10);
+
+  if (itemId <= 0) {
+    return error(res, 400, 'invalid item id');
+  }
+
+  const reqData = req.body;
+  const data = [];
+
+  endpoint.schema.forEach((label) => {
+    if (reqData[label]) {
+      data.push(reqData[label]);
+    } else {
+      data.push(undefined); // this prevent from clearing not present cell
+    }
+  });
+
+  try {
+    // try to update record on the table
+    updateColumnWorksheet(project.spreadsheet, endpoint.worksheetName, itemId, data);
+  } catch (e) {
+    return error(
+      res,
+      500,
+      'unable to update the table',
+    );
+  }
+
+  user.remainingRequests -= 1;
+  user.save();
+
+  return res.status(200).json({
     success: true,
     info: {
       remainingRequests: user.remainingRequests,

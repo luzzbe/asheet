@@ -17,6 +17,7 @@ router.use(limiter);
 
 router.get('/:projectId/:endpointName', apiController.projectEndpointGetAll);
 router.get('/:projectId/:endpointName/:itemId', apiController.projectEndpointGet);
+router.put('/:projectId/:endpointName/:itemId', apiController.projectEndpointUpdate);
 router.post('/:projectId/:endpointName', apiController.projectEndpointPost);
 router.delete('/:projectId/:endpointName/:itemId', apiController.projectEndpointDelete);
 
