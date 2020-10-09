@@ -1,16 +1,16 @@
-const asyncHandler = require('express-async-handler');
-const { google } = require('googleapis');
-const { oauth2Client } = require('../services/google');
-const User = require('../models/user');
+const asyncHandler = require("express-async-handler");
+const { google } = require("googleapis");
+const { oauth2Client } = require("../services/google");
+const User = require("../models/user");
 
 exports.userLogin = (req, res) => {
   // URL generation
   const url = oauth2Client.generateAuthUrl({
-    access_type: 'offline',
+    access_type: "offline",
     scope: [
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email',
-      'https://www.googleapis.com/auth/spreadsheets',
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/spreadsheets",
     ],
   });
   // Redirection to the login page
@@ -19,13 +19,13 @@ exports.userLogin = (req, res) => {
 
 exports.userLoginCallback = asyncHandler(async (req, res, next) => {
   if (req.query.error) {
-    return next('An error occurred, please try again later.');
+    return next("An error occurred, please try again later.");
   }
 
   const { tokens } = await oauth2Client.getToken(req.query.code);
   oauth2Client.setCredentials(tokens);
 
-  const oauth2 = new google.oauth2('v2');
+  const oauth2 = new google.oauth2("v2");
   // Retreive user info
   const { data } = await oauth2.userinfo.get({ auth: oauth2Client });
 
@@ -49,12 +49,12 @@ exports.userLoginCallback = asyncHandler(async (req, res, next) => {
   // Save the access token to a session
   req.session.user = user;
 
-  return res.redirect('/projects');
+  return res.redirect("/projects");
 });
 
 exports.userLogout = (req, res) => {
   req.session.user = null;
-  return res.redirect('/');
+  return res.redirect("/");
 };
 
 exports.verifyLogin = async (req, res, next) => {
@@ -65,5 +65,5 @@ exports.verifyLogin = async (req, res, next) => {
     });
     return next();
   }
-  return res.redirect('/');
+  return res.redirect("/");
 };

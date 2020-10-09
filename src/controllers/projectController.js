@@ -1,18 +1,18 @@
-const asyncHandler = require('express-async-handler');
-const camelCase = require('camelcase');
-const Project = require('../models/project');
+const asyncHandler = require("express-async-handler");
+const camelCase = require("camelcase");
+const Project = require("../models/project");
 const {
   getSpreadsheetTabs,
   extractIdFromURI,
   getWorksheetLabels,
-} = require('../services/spreadsheet');
+} = require("../services/spreadsheet");
 
-const { flash } = require('../services/flash');
+const { flash } = require("../services/flash");
 
 exports.projectList = asyncHandler(async (req, res) => {
   const projects = await Project.find({ user: req.session.user._id });
-  return res.render('projects/list', {
-    title: 'Project list',
+  return res.render("projects/list", {
+    title: "Project list",
     projects,
   });
 });
@@ -24,11 +24,11 @@ exports.projectDetail = asyncHandler(async (req, res) => {
   });
 
   if (!project) {
-    return res.redirect('/projects');
+    return res.redirect("/projects");
   }
 
-  return res.render('projects/view', {
-    title: 'Project details',
+  return res.render("projects/view", {
+    title: "Project details",
     project,
   });
 });
@@ -40,7 +40,7 @@ exports.projectSync = asyncHandler(async (req, res) => {
   });
 
   if (!project) {
-    return res.redirect('/projects');
+    return res.redirect("/projects");
   }
 
   // retreive worksheets from spreadsheet
@@ -56,16 +56,17 @@ exports.projectSync = asyncHandler(async (req, res) => {
   let worksheetsLabels = await Promise.all(workPool);
 
   // remove worksheet whithout schema
-  worksheets = worksheets.filter((_, i) => worksheetsLabels[i] && worksheetsLabels[i].length > 0);
+  worksheets = worksheets.filter(
+    (_, i) => worksheetsLabels[i] && worksheetsLabels[i].length > 0
+  );
 
   // remove corresponding labels
   worksheetsLabels = worksheetsLabels.filter(
-    (_, i) => worksheetsLabels[i] && worksheetsLabels[i].length > 0,
+    (_, i) => worksheetsLabels[i] && worksheetsLabels[i].length > 0
   );
 
   // camelCase all labels
-  worksheetsLabels = worksheetsLabels
-    .map((w) => w.map((l) => camelCase(l)));
+  worksheetsLabels = worksheetsLabels.map((w) => w.map((l) => camelCase(l)));
 
   // default settings
   const defaultSettings = {
@@ -74,12 +75,13 @@ exports.projectSync = asyncHandler(async (req, res) => {
     post: false,
     put: false,
     delete: false,
-
   };
 
   // map and add schema name and schema detail to each endpoint
   project.endpoints = worksheets.map((w, i) => {
-    const previousSettings = project.endpoints ? project.endpoints[i].methods : {};
+    const previousSettings = project.endpoints
+      ? project.endpoints[i].methods
+      : {};
     return {
       worksheetName: w,
       endpointName: camelCase(w),
@@ -91,7 +93,7 @@ exports.projectSync = asyncHandler(async (req, res) => {
   // save the project
   project.save();
 
-  flash(req, 'Project synced', 'green');
+  flash(req, "Project synced", "green");
 
   return res.redirect(`/projects/${project._id}`);
 });
@@ -101,13 +103,13 @@ exports.projectDelete = asyncHandler(async (req, res) => {
     _id: req.params.projectId,
     user: req.session.user._id,
   });
-  flash(req, 'Project deleted', 'green');
-  return res.redirect('/projects');
+  flash(req, "Project deleted", "green");
+  return res.redirect("/projects");
 });
 
 exports.projectCreateGet = (req, res) => {
-  res.render('projects/create', {
-    title: 'Create a project',
+  res.render("projects/create", {
+    title: "Create a project",
   });
 };
 
@@ -115,8 +117,8 @@ exports.projectCreatePost = asyncHandler(async (req, res) => {
   const sheetId = extractIdFromURI(req.body.url);
 
   if (!sheetId) {
-    flash(req, 'Invalid Google Sheet URI', 'red');
-    return res.redirect('/projects/create');
+    flash(req, "Invalid Google Sheet URI", "red");
+    return res.redirect("/projects/create");
   }
 
   const projectData = {
@@ -127,7 +129,7 @@ exports.projectCreatePost = asyncHandler(async (req, res) => {
 
   const project = await Project.create(projectData);
 
-  flash(req, 'Project created', 'green');
+  flash(req, "Project created", "green");
   return res.redirect(`/projects/${project._id}`);
 });
 
@@ -138,13 +140,15 @@ exports.projectEndpointUpdatePost = asyncHandler(async (req, res) => {
   });
 
   if (!project) {
-    return res.redirect('/projects');
+    return res.redirect("/projects");
   }
 
-  const endpoint = project.endpoints.find((ep) => ep.endpointName === req.params.endpointName);
+  const endpoint = project.endpoints.find(
+    (ep) => ep.endpointName === req.params.endpointName
+  );
 
   if (!endpoint) {
-    flash(req, 'Invalid endpoint', 'red');
+    flash(req, "Invalid endpoint", "red");
     return res.redirect(`/projects/${project._id}`);
   }
 
@@ -156,11 +160,11 @@ exports.projectEndpointUpdatePost = asyncHandler(async (req, res) => {
     delete: !!req.body.delete,
   };
 
-  project.markModified('endpoints');
+  project.markModified("endpoints");
 
   project.save();
 
-  flash(req, 'Project updated', 'green');
+  flash(req, "Project updated", "green");
 
   return res.redirect(`/projects/${project._id}`);
 });

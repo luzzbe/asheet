@@ -1,14 +1,14 @@
-const asyncHandler = require('express-async-handler');
-const camelCase = require('camelcase');
-const Project = require('../models/project');
-const User = require('../models/user');
-const { oauth2Client } = require('../services/google');
+const asyncHandler = require("express-async-handler");
+const camelCase = require("camelcase");
+const Project = require("../models/project");
+const User = require("../models/user");
+const { oauth2Client } = require("../services/google");
 const {
   getWorksheetContent,
   appendWorksheet,
   deleteColumnWorksheet,
   updateColumnWorksheet,
-} = require('../services/spreadsheet');
+} = require("../services/spreadsheet");
 
 const error = (res, statusCode, message) => {
   res.status(statusCode).json({
@@ -23,7 +23,7 @@ exports.verifyProject = asyncHandler(async (req, res, next) => {
   });
 
   if (!project) {
-    return error(res, 404, 'the project you requested does not exist');
+    return error(res, 404, "the project you requested does not exist");
   }
 
   const user = await User.findById(project.user);
@@ -36,13 +36,15 @@ exports.verifyProject = asyncHandler(async (req, res, next) => {
   }
 
   if (user.remainingRequests === 0) {
-    return error(res, 429, 'you don\'t have any more requests available, you can buy additional requests on your account');
+    return error(res, 429, "you don't have any more requests available");
   }
 
-  const endpoint = project.endpoints.find((ep) => ep.endpointName === req.params.endpointName);
+  const endpoint = project.endpoints.find(
+    (ep) => ep.endpointName === req.params.endpointName
+  );
 
   if (!endpoint) {
-    return error(res, 404, 'the endpoint you requested does not exist');
+    return error(res, 404, "the endpoint you requested does not exist");
   }
 
   req.project = project;
@@ -54,21 +56,25 @@ exports.verifyProject = asyncHandler(async (req, res, next) => {
 
 exports.verifyMethod = (req, res, next) => {
   switch (req.method) {
-    case 'GET':
-      if (!req.endpoint.methods.get) return error(res, 400, 'the GET method is disabled');
+    case "GET":
+      if (!req.endpoint.methods.get)
+        return error(res, 400, "the GET method is disabled");
       break;
-    case 'POST':
-      if (!req.endpoint.methods.post) return error(res, 400, 'the GET (one) method is disabled');
+    case "POST":
+      if (!req.endpoint.methods.post)
+        return error(res, 400, "the GET (one) method is disabled");
       break;
-    case 'PUT':
-      if (!req.endpoint.methods.put) return error(res, 400, 'the PUT method is disabled');
+    case "PUT":
+      if (!req.endpoint.methods.put)
+        return error(res, 400, "the PUT method is disabled");
       break;
-    case 'DELETE':
-      if (!req.endpoint.methods.delete) return error(res, 400, 'the DELETE method is disabled');
+    case "DELETE":
+      if (!req.endpoint.methods.delete)
+        return error(res, 400, "the DELETE method is disabled");
       break;
 
     default:
-      return error(res, 400, 'the method is not supported');
+      return error(res, 400, "the method is not supported");
   }
 
   return next();
@@ -85,13 +91,13 @@ exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
   try {
     worksheetData = await getWorksheetContent(
       project.spreadsheet,
-      endpoint.worksheetName,
+      endpoint.worksheetName
     );
   } catch (e) {
     return error(
       res,
       400,
-      'unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize',
+      "unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize"
     );
   }
 
@@ -104,7 +110,7 @@ exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
 
     if (rowData.length > 0) {
       endpoint.schema.forEach((label, index) => {
-        row[camelCase(label)] = rowData[index] || '';
+        row[camelCase(label)] = rowData[index] || "";
       });
 
       if (row.id) {
@@ -138,13 +144,13 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
   try {
     worksheetData = await getWorksheetContent(
       project.spreadsheet,
-      endpoint.worksheetName,
+      endpoint.worksheetName
     );
   } catch (e) {
     return error(
       res,
       500,
-      'unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize',
+      "unable to retrieve the contents of the table. If you have renamed the tab, please resynchronize"
     );
   }
 
@@ -152,17 +158,17 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
   const itemId = parseInt(req.params.itemId, 10);
 
   if (itemId <= 0) {
-    return error(res, 400, 'invalid item id');
+    return error(res, 400, "invalid item id");
   }
 
   const rowData = worksheetData[itemId - 2] || null;
 
   if (!rowData || rowData.length <= 0) {
-    return error(res, 404, 'record not found');
+    return error(res, 404, "record not found");
   }
 
   endpoint.schema.forEach((label, index) => {
-    item[camelCase(label)] = rowData[index] || '';
+    item[camelCase(label)] = rowData[index] || "";
   });
 
   if (item.id) {
@@ -191,7 +197,7 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
     if (reqData[label]) {
       data.push(reqData[label]);
     } else {
-      data.push('');
+      data.push("");
     }
   });
 
@@ -199,11 +205,7 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
     // try to add new record to the table
     await appendWorksheet(project.spreadsheet, endpoint.worksheetName, data);
   } catch (e) {
-    return error(
-      res,
-      500,
-      'unable to update the table',
-    );
+    return error(res, 500, "unable to update the table");
   }
 
   user.remainingRequests -= 1;
@@ -223,7 +225,7 @@ exports.projectEndpointUpdate = asyncHandler(async (req, res) => {
   const itemId = parseInt(req.params.itemId, 10);
 
   if (itemId <= 0) {
-    return error(res, 400, 'invalid item id');
+    return error(res, 400, "invalid item id");
   }
 
   const reqData = req.body;
@@ -239,13 +241,14 @@ exports.projectEndpointUpdate = asyncHandler(async (req, res) => {
 
   try {
     // try to update record on the table
-    updateColumnWorksheet(project.spreadsheet, endpoint.worksheetName, itemId, data);
-  } catch (e) {
-    return error(
-      res,
-      500,
-      'unable to update the table',
+    updateColumnWorksheet(
+      project.spreadsheet,
+      endpoint.worksheetName,
+      itemId,
+      data
     );
+  } catch (e) {
+    return error(res, 500, "unable to update the table");
   }
 
   user.remainingRequests -= 1;
@@ -265,7 +268,7 @@ exports.projectEndpointDelete = asyncHandler(async (req, res) => {
   const itemId = parseInt(req.params.itemId, 10);
 
   if (itemId <= 0) {
-    return error(res, 400, 'invalid item id');
+    return error(res, 400, "invalid item id");
   }
 
   deleteColumnWorksheet(project.spreadsheet, endpoint.worksheetName, itemId);
