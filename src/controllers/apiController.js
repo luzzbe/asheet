@@ -51,6 +51,20 @@ exports.verifyProject = asyncHandler(async (req, res, next) => {
     return error(res, 429, "you don't have any more requests available");
   }
 
+  // Verify if project is protected
+  if (project.isProtected) {
+    if (!req.headers.authorization) {
+      return error(res, 401, "this api is protected, you must provide a token");
+    }
+
+    const header = req.headers.authorization;
+    const token = header.split(" ")[1] || "";
+
+    if (token !== project.token) {
+      return error(res, 401, "the token you gave is invalid");
+    }
+  }
+
   const endpoint = project.endpoints.find(
     (ep) => ep.endpointName === req.params.endpointName
   );
