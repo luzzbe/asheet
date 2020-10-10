@@ -35,6 +35,7 @@ exports.userLoginCallback = asyncHandler(async (req, res, next) => {
     googleID: data.id,
     picture: data.picture,
     accessToken: tokens.access_token,
+    lastConnection: new Date(),
   };
 
   // If refresh_token is present we add it to user data
@@ -44,6 +45,7 @@ exports.userLoginCallback = asyncHandler(async (req, res, next) => {
   const user = await User.findOneAndUpdate({ googleID: data.id }, userData, {
     new: true,
     upsert: true,
+    setDefaultsOnInsert: true,
   });
 
   // Save the access token to a session
