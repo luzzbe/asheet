@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const camelCase = require("camelcase");
+const jwt = require("jsonwebtoken");
 const Project = require("../models/project");
 const {
   getSpreadsheetTabs,
@@ -98,6 +99,28 @@ exports.projectSync = asyncHandler(async (req, res) => {
   return res.redirect(`/projects/${project._id}`);
 });
 
+exports.projectToggleProtect = asyncHandler(async (req, res) => {
+  const project = await Project.findOne({
+    _id: req.params.projectId,
+    user: req.session.user._id,
+  });
+
+  if (!project) {
+    return res.redirect("/projects");
+  }
+
+  await project.updateOne({ isProtected: !project.isProtected });
+
+  flash(req, "Project updated", "green");
+  return res.redirect(`/projects/${project._id}`);
+});
+
+exports.projectCreateGet = (req, res) => {
+  res.render("projects/create", {
+    title: "Create a project",
+  });
+};
+
 exports.projectDelete = asyncHandler(async (req, res) => {
   await Project.findOneAndDelete({
     _id: req.params.projectId,
@@ -125,6 +148,10 @@ exports.projectCreatePost = asyncHandler(async (req, res) => {
     name: req.body.name,
     spreadsheet: sheetId,
     user: req.session.user._id,
+    token: jwt.sign(
+      { email: req.session.user.email },
+      process.env.SESSION_SECRET
+    ),
   };
 
   const project = await Project.create(projectData);
