@@ -17,6 +17,18 @@ const error = (res, statusCode, message) => {
   });
 };
 
+const quotaInfo = (user) => {
+  const nextDate = new Date(user.lastReset);
+  nextDate.setDate(user.lastReset.getDate() + 1);
+
+  return {
+    dailyRequests: user.dailyRequests,
+    remainingRequests: user.remainingRequests,
+    lastReset: user.lastReset,
+    nextReset: nextDate,
+  };
+};
+
 exports.verifyProject = asyncHandler(async (req, res, next) => {
   const project = await Project.findOne({
     _id: req.params.projectId,
@@ -94,6 +106,7 @@ exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
       endpoint.worksheetName
     );
   } catch (e) {
+    console.log(e);
     return error(
       res,
       400,
@@ -127,7 +140,7 @@ exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
   const response = {
     success: true,
     data: items,
-    info: { remainingRequests: user.remainingRequests },
+    info: quotaInfo(user),
   };
 
   return res.json(response);
@@ -180,7 +193,7 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
   const response = {
     success: true,
     data: item,
-    info: { remainingRequests: user.remainingRequests },
+    info: quotaInfo(user),
   };
 
   return res.json(response);
@@ -213,9 +226,7 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
 
   return res.status(201).json({
     success: true,
-    info: {
-      remainingRequests: user.remainingRequests,
-    },
+    info: quotaInfo(user),
   });
 });
 
@@ -256,9 +267,7 @@ exports.projectEndpointUpdate = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
-    info: {
-      remainingRequests: user.remainingRequests,
-    },
+    info: quotaInfo(user),
   });
 });
 
@@ -278,8 +287,6 @@ exports.projectEndpointDelete = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
-    info: {
-      remainingRequests: user.remainingRequests,
-    },
+    info: quotaInfo(user),
   });
 });
