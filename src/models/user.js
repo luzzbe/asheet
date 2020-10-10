@@ -1,22 +1,18 @@
-const mongoose = require('mongoose');
-const { CronJob } = require('cron');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String },
-  remainingRequests: { type: Number, default: 500 },
+  dailyRequests: { type: Number, default: 50 },
+  remainingRequests: { type: Number, default: 50 },
   googleID: { type: String, required: true, unique: true },
   picture: { type: String },
   refreshToken: { type: String },
   accessToken: { type: String },
+  lastConnection: { type: Date },
+  lastReset: { type: Date, default: Date.now },
 });
 
-const User = mongoose.model('User', userSchema);
-
-// Reset free quota each month
-const job = new CronJob('0 0 1 * *', () => {
-  User.updateMany({}, { remainingRequests: 500 });
-}, null, true, 'America/Los_Angeles');
-job.start();
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;
