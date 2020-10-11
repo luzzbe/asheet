@@ -321,7 +321,7 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
  *
  * @apiExample {js} Javascript
  *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1", {
- *      method: "UPDATE"
+ *      method: "PUT"
  *     })
  *       .then((response) => {
  *          return response.json();
