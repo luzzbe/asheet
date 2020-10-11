@@ -106,7 +106,18 @@ exports.verifyMethod = (req, res, next) => {
   return next();
 };
 
-// Retreive all items from a spreadsheet
+/**
+ * @api {get} /:projectId/:endpointName Retreive all records from a worksheet
+ * @apiName GetAll
+ * @apiGroup Project
+ *
+ * @apiParam {String} projectId Project's unique ID.
+ * @apiParam {String} endpointName Endpoint's name.
+ *
+ * @apiSuccess {Boolean} success Request status.
+ * @apiSuccess {Object[]} data All records from worksheet.
+ * @apiSuccess {Object} info Remaining requests's info.
+ */
 exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
   const { user, project, endpoint } = req;
 
@@ -160,7 +171,19 @@ exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
   return res.json(response);
 });
 
-// Retreive one item from a spreadsheet
+/**
+ * @api {get} /:projectId/:endpointName/:id Retreive a record from a worksheet
+ * @apiName GetOne
+ * @apiGroup Project
+ *
+ * @apiParam {String} projectId Project's unique ID.
+ * @apiParam {String} endpointName Endpoint's name.
+ * @apiParam {Number} id Record's ID.
+ *
+ * @apiSuccess {Boolean} success Request status.
+ * @apiSuccess {Object} data Record from worksheet.
+ * @apiSuccess {Object} info Remaining requests's info.
+ */
 exports.projectEndpointGet = asyncHandler(async (req, res) => {
   const { user, project, endpoint } = req;
 
@@ -213,7 +236,17 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
   return res.json(response);
 });
 
-// Append data to a spreadsheet
+/**
+ * @api {post} /:projectId/:endpointName/ Add record to a worksheet
+ * @apiName AddRecord
+ * @apiGroup Project
+ *
+ * @apiParam {String} projectId Project's unique ID.
+ * @apiParam {String} endpointName Endpoint's name.
+ *
+ * @apiSuccess {Boolean} success Request status.
+ * @apiSuccess {Object} info Remaining requests's info.
+ */
 exports.projectEndpointPost = asyncHandler(async (req, res) => {
   const { user, project, endpoint } = req;
 
@@ -244,7 +277,18 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
   });
 });
 
-// update column from a worksheet
+/**
+ * @api {put} /:projectId/:endpointName/:id Update a record from a worksheet
+ * @apiName UpdateRecord
+ * @apiGroup Project
+ *
+ * @apiParam {String} projectId Project's unique ID.
+ * @apiParam {String} endpointName Endpoint's name.
+ * @apiParam {Number} id Record's ID.
+ *
+ * @apiSuccess {Boolean} success Request status.
+ * @apiSuccess {Object} info Remaining requests's info.
+ */
 exports.projectEndpointUpdate = asyncHandler(async (req, res) => {
   const { user, project, endpoint } = req;
   const itemId = parseInt(req.params.itemId, 10);
@@ -285,7 +329,18 @@ exports.projectEndpointUpdate = asyncHandler(async (req, res) => {
   });
 });
 
-// delete column from a worksheet
+/**
+ * @api {delete} /:projectId/:endpointName/:id Delete a record from a worksheet
+ * @apiName DeleteRecord
+ * @apiGroup Project
+ *
+ * @apiParam {String} projectId Project's unique ID.
+ * @apiParam {String} endpointName Endpoint's name.
+ * @apiParam {Number} id Record's ID.
+ *
+ * @apiSuccess {Boolean} success Request status.
+ * @apiSuccess {Object} info Remaining requests's info.
+ */
 exports.projectEndpointDelete = asyncHandler(async (req, res) => {
   const { user, project, endpoint } = req;
   const itemId = parseInt(req.params.itemId, 10);

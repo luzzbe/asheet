@@ -8,6 +8,10 @@
     "watch": "nodemon src/app.js",
     "tailwind:build": "npx tailwindcss build src/tailwind.css -o src/public/css/styles.css"
   },
+  "apidoc": {
+    "title": "Flasheet API",
+    "url": "https://flasheet.co/api"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {

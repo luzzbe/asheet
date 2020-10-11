@@ -1,10 +1,10 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
-const userController = require('../controllers/userController');
+const userController = require("../controllers/userController");
 
-router.get('/google', userController.userLogin);
-router.get('/google/callback', userController.userLoginCallback);
-router.get('/logout', userController.userLogout);
+router.get("/google", userController.userLogin);
+router.get("/google/callback", userController.userLoginCallback);
+router.get("/logout", userController.userLogout);
 
 module.exports = router;
