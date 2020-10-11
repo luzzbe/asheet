@@ -2,9 +2,10 @@
   {
     "type": "post",
     "url": "/:projectId/:endpointName/",
-    "title": "Add record to a worksheet",
-    "name": "AddRecord",
-    "group": "Project",
+    "title": "Create",
+    "description": "<p>Add a record to a worksheet.</p>",
+    "name": "Create",
+    "group": "Endpoint",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -47,14 +48,15 @@
     },
     "version": "0.0.0",
     "filename": "src/controllers/apiController.js",
-    "groupTitle": "Project"
+    "groupTitle": "Endpoint"
   },
   {
     "type": "delete",
     "url": "/:projectId/:endpointName/:id",
-    "title": "Delete a record from a worksheet",
-    "name": "DeleteRecord",
-    "group": "Project",
+    "title": "Delete",
+    "description": "<p>Delete a record from a worksheet.</p>",
+    "name": "Delete",
+    "group": "Endpoint",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -104,14 +106,15 @@
     },
     "version": "0.0.0",
     "filename": "src/controllers/apiController.js",
-    "groupTitle": "Project"
+    "groupTitle": "Endpoint"
   },
   {
     "type": "get",
     "url": "/:projectId/:endpointName",
-    "title": "Retreive all records from a worksheet",
+    "title": "GetAll",
+    "description": "<p>Retreive all records from a worksheet</p>",
     "name": "GetAll",
-    "group": "Project",
+    "group": "Endpoint",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -159,16 +162,24 @@
         ]
       }
     },
+    "examples": [
+      {
+        "title": "Javascript",
+        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops\")\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
+        "type": "js"
+      }
+    ],
     "version": "0.0.0",
     "filename": "src/controllers/apiController.js",
-    "groupTitle": "Project"
+    "groupTitle": "Endpoint"
   },
   {
     "type": "get",
     "url": "/:projectId/:endpointName/:id",
-    "title": "Retreive a record from a worksheet",
+    "title": "GetOne",
+    "description": "<p>Retreive one record from a worksheet</p>",
     "name": "GetOne",
-    "group": "Project",
+    "group": "Endpoint",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -223,16 +234,24 @@
         ]
       }
     },
+    "examples": [
+      {
+        "title": "Javascript",
+        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1\")\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
+        "type": "js"
+      }
+    ],
     "version": "0.0.0",
     "filename": "src/controllers/apiController.js",
-    "groupTitle": "Project"
+    "groupTitle": "Endpoint"
   },
   {
     "type": "put",
     "url": "/:projectId/:endpointName/:id",
-    "title": "Update a record from a worksheet",
-    "name": "UpdateRecord",
-    "group": "Project",
+    "title": "Update",
+    "description": "<p>Update a record in a worksheet.</p>",
+    "name": "Update",
+    "group": "Endpoint",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -282,6 +301,6 @@
     },
     "version": "0.0.0",
     "filename": "src/controllers/apiController.js",
-    "groupTitle": "Project"
+    "groupTitle": "Endpoint"
   }
 ]

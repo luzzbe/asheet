@@ -107,9 +107,10 @@ exports.verifyMethod = (req, res, next) => {
 };
 
 /**
- * @api {get} /:projectId/:endpointName Retreive all records from a worksheet
+ * @api {get} /:projectId/:endpointName GetAll
+ * @apiDescription Retreive all records from a worksheet
  * @apiName GetAll
- * @apiGroup Project
+ * @apiGroup Endpoint
  *
  * @apiParam {String} projectId Project's unique ID.
  * @apiParam {String} endpointName Endpoint's name.
@@ -117,6 +118,15 @@ exports.verifyMethod = (req, res, next) => {
  * @apiSuccess {Boolean} success Request status.
  * @apiSuccess {Object[]} data All records from worksheet.
  * @apiSuccess {Object} info Remaining requests's info.
+ *
+ * @apiExample {js} Javascript
+ *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops")
+ *       .then((response) => {
+ *          return response.json();
+ *       })
+ *       .then((data) => {
+ *        console.log(data);
+ *       });
  */
 exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
   const { user, project, endpoint } = req;
@@ -172,9 +182,10 @@ exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
 });
 
 /**
- * @api {get} /:projectId/:endpointName/:id Retreive a record from a worksheet
+ * @api {get} /:projectId/:endpointName/:id GetOne
+ * @apiDescription Retreive one record from a worksheet
  * @apiName GetOne
- * @apiGroup Project
+ * @apiGroup Endpoint
  *
  * @apiParam {String} projectId Project's unique ID.
  * @apiParam {String} endpointName Endpoint's name.
@@ -183,6 +194,15 @@ exports.projectEndpointGetAll = asyncHandler(async (req, res) => {
  * @apiSuccess {Boolean} success Request status.
  * @apiSuccess {Object} data Record from worksheet.
  * @apiSuccess {Object} info Remaining requests's info.
+ *
+ * @apiExample {js} Javascript
+ *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1")
+ *       .then((response) => {
+ *          return response.json();
+ *       })
+ *       .then((data) => {
+ *        console.log(data);
+ *       });
  */
 exports.projectEndpointGet = asyncHandler(async (req, res) => {
   const { user, project, endpoint } = req;
@@ -237,9 +257,10 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
 });
 
 /**
- * @api {post} /:projectId/:endpointName/ Add record to a worksheet
- * @apiName AddRecord
- * @apiGroup Project
+ * @api {post} /:projectId/:endpointName/ Create
+ * @apiDescription Add a record to a worksheet.
+ * @apiName Create
+ * @apiGroup Endpoint
  *
  * @apiParam {String} projectId Project's unique ID.
  * @apiParam {String} endpointName Endpoint's name.
@@ -278,9 +299,10 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
 });
 
 /**
- * @api {put} /:projectId/:endpointName/:id Update a record from a worksheet
- * @apiName UpdateRecord
- * @apiGroup Project
+ * @api {put} /:projectId/:endpointName/:id Update
+ * @apiDescription Update a record in a worksheet.
+ * @apiName Update
+ * @apiGroup Endpoint
  *
  * @apiParam {String} projectId Project's unique ID.
  * @apiParam {String} endpointName Endpoint's name.
@@ -330,9 +352,10 @@ exports.projectEndpointUpdate = asyncHandler(async (req, res) => {
 });
 
 /**
- * @api {delete} /:projectId/:endpointName/:id Delete a record from a worksheet
- * @apiName DeleteRecord
- * @apiGroup Project
+ * @api {delete} /:projectId/:endpointName/:id Delete
+ * @apiDescription Delete a record from a worksheet.
+ * @apiName Delete
+ * @apiGroup Endpoint
  *
  * @apiParam {String} projectId Project's unique ID.
  * @apiParam {String} endpointName Endpoint's name.
