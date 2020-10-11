@@ -26,6 +26,13 @@
         ]
       }
     },
+    "examples": [
+      {
+        "title": "Javascript",
+        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops\", {\n method: \"POST\"\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
+        "type": "js"
+      }
+    ],
     "success": {
       "fields": {
         "Success 200": [
@@ -84,6 +91,13 @@
         ]
       }
     },
+    "examples": [
+      {
+        "title": "Javascript",
+        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1\", {\n method: \"DELETE\"\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
+        "type": "js"
+      }
+    ],
     "success": {
       "fields": {
         "Success 200": [
@@ -279,6 +293,13 @@
         ]
       }
     },
+    "examples": [
+      {
+        "title": "Javascript",
+        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1\", {\n method: \"UPDATE\"\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
+        "type": "js"
+      }
+    ],
     "success": {
       "fields": {
         "Success 200": [

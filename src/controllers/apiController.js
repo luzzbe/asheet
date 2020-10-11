@@ -265,6 +265,17 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
  * @apiParam {String} projectId Project's unique ID.
  * @apiParam {String} endpointName Endpoint's name.
  *
+ * @apiExample {js} Javascript
+ *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops", {
+ *      method: "POST"
+ *     })
+ *       .then((response) => {
+ *          return response.json();
+ *       })
+ *       .then((data) => {
+ *        console.log(data);
+ *       });
+ *
  * @apiSuccess {Boolean} success Request status.
  * @apiSuccess {Object} info Remaining requests's info.
  */
@@ -307,6 +318,17 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
  * @apiParam {String} projectId Project's unique ID.
  * @apiParam {String} endpointName Endpoint's name.
  * @apiParam {Number} id Record's ID.
+ *
+ * @apiExample {js} Javascript
+ *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1", {
+ *      method: "UPDATE"
+ *     })
+ *       .then((response) => {
+ *          return response.json();
+ *       })
+ *       .then((data) => {
+ *        console.log(data);
+ *       });
  *
  * @apiSuccess {Boolean} success Request status.
  * @apiSuccess {Object} info Remaining requests's info.
@@ -360,6 +382,17 @@ exports.projectEndpointUpdate = asyncHandler(async (req, res) => {
  * @apiParam {String} projectId Project's unique ID.
  * @apiParam {String} endpointName Endpoint's name.
  * @apiParam {Number} id Record's ID.
+ *
+ * @apiExample {js} Javascript
+ *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1", {
+ *      method: "DELETE"
+ *     })
+ *       .then((response) => {
+ *          return response.json();
+ *       })
+ *       .then((data) => {
+ *        console.log(data);
+ *       });
  *
  * @apiSuccess {Boolean} success Request status.
  * @apiSuccess {Object} info Remaining requests's info.
