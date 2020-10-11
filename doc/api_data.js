@@ -1,0 +1,306 @@
+define({ "api": [
+  {
+    "type": "post",
+    "url": "/:projectId/:endpointName/",
+    "title": "Create",
+    "description": "<p>Add a record to a worksheet.</p>",
+    "name": "Create",
+    "group": "Endpoint",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "projectId",
+            "description": "<p>Project's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "endpointName",
+            "description": "<p>Endpoint's name.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "success",
+            "description": "<p>Request status.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "info",
+            "description": "<p>Remaining requests's info.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/controllers/apiController.js",
+    "groupTitle": "Endpoint"
+  },
+  {
+    "type": "delete",
+    "url": "/:projectId/:endpointName/:id",
+    "title": "Delete",
+    "description": "<p>Delete a record from a worksheet.</p>",
+    "name": "Delete",
+    "group": "Endpoint",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "projectId",
+            "description": "<p>Project's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "endpointName",
+            "description": "<p>Endpoint's name.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Record's ID.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "success",
+            "description": "<p>Request status.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "info",
+            "description": "<p>Remaining requests's info.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/controllers/apiController.js",
+    "groupTitle": "Endpoint"
+  },
+  {
+    "type": "get",
+    "url": "/:projectId/:endpointName",
+    "title": "GetAll",
+    "description": "<p>Retreive all records from a worksheet</p>",
+    "name": "GetAll",
+    "group": "Endpoint",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "projectId",
+            "description": "<p>Project's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "endpointName",
+            "description": "<p>Endpoint's name.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "success",
+            "description": "<p>Request status.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "data",
+            "description": "<p>All records from worksheet.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "info",
+            "description": "<p>Remaining requests's info.</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Javascript",
+        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops\")\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
+        "type": "js"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "src/controllers/apiController.js",
+    "groupTitle": "Endpoint"
+  },
+  {
+    "type": "get",
+    "url": "/:projectId/:endpointName/:id",
+    "title": "GetOne",
+    "description": "<p>Retreive one record from a worksheet</p>",
+    "name": "GetOne",
+    "group": "Endpoint",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "projectId",
+            "description": "<p>Project's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "endpointName",
+            "description": "<p>Endpoint's name.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Record's ID.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "success",
+            "description": "<p>Request status.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>Record from worksheet.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "info",
+            "description": "<p>Remaining requests's info.</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Javascript",
+        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1\")\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
+        "type": "js"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "src/controllers/apiController.js",
+    "groupTitle": "Endpoint"
+  },
+  {
+    "type": "put",
+    "url": "/:projectId/:endpointName/:id",
+    "title": "Update",
+    "description": "<p>Update a record in a worksheet.</p>",
+    "name": "Update",
+    "group": "Endpoint",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "projectId",
+            "description": "<p>Project's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "endpointName",
+            "description": "<p>Endpoint's name.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Record's ID.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "success",
+            "description": "<p>Request status.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "info",
+            "description": "<p>Remaining requests's info.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/controllers/apiController.js",
+    "groupTitle": "Endpoint"
+  }
+] });

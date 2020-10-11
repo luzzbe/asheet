@@ -54,6 +54,9 @@ app.use(
   express.static(`${__dirname}/public`, { etag: true, lastModified: true })
 );
 
+// Serve doc folder
+app.use("/doc", express.static(`${__dirname}/../doc`));
+
 // pass variables to our templates + all requests
 app.use((req, res, next) => {
   res.locals.flash = req.session.flash;
