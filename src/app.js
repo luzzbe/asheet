@@ -47,7 +47,7 @@ app.use(cors());
 app.use(helmet());
 
 // setup form parser
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // Serve static files
 app.use(

@@ -29,7 +29,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Javascript",
-        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops\", {\n method: \"POST\"\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
+        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops\", {\n method: \"POST\",\n body: JSON.stringify({\n   name: \"Test\",\n   coorX: 12.53,\n   coorY: -11.20\n })\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
         "type": "js"
       }
     ],
@@ -296,7 +296,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Javascript",
-        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1\", {\n method: \"UPDATE\"\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
+        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1\", {\n method: \"PUT\"\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
         "type": "js"
       }
     ],
