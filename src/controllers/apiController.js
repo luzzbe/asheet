@@ -88,7 +88,7 @@ exports.verifyMethod = (req, res, next) => {
       break;
     case "POST":
       if (!req.endpoint.methods.post)
-        return error(res, 400, "the GET (one) method is disabled");
+        return error(res, 400, "the POST method is disabled");
       break;
     case "PUT":
       if (!req.endpoint.methods.put)
@@ -267,7 +267,12 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
  *
  * @apiExample {js} Javascript
  *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops", {
- *      method: "POST"
+ *      method: "POST",
+ *      body: JSON.stringify({
+ *        name: "Test",
+ *        coorX: 12.53,
+ *        coorY: -11.20
+ *      })
  *     })
  *       .then((response) => {
  *          return response.json();
@@ -315,13 +320,14 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
  * @apiName Update
  * @apiGroup Endpoint
  *
- * @apiParam {String} projectId Project's unique ID.
- * @apiParam {String} endpointName Endpoint's name.
- * @apiParam {Number} id Record's ID.
- *
  * @apiExample {js} Javascript
- *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1", {
- *      method: "PUT"
+ *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/130", {
+ *      method: "PUT",
+ *      body: JSON.stringify({
+ *        name: "My new name",
+ *        coorX: 10.53,
+ *        coorY: -9.20
+ *      })
  *     })
  *       .then((response) => {
  *          return response.json();
@@ -330,6 +336,9 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
  *        console.log(data);
  *       });
  *
+ * @apiParam {String} projectId Project's unique ID.
+ * @apiParam {String} endpointName Endpoint's name.
+ * @apiParam {Number} id Record's ID.
  * @apiSuccess {Boolean} success Request status.
  * @apiSuccess {Object} info Remaining requests's info.
  */
@@ -384,7 +393,7 @@ exports.projectEndpointUpdate = asyncHandler(async (req, res) => {
  * @apiParam {Number} id Record's ID.
  *
  * @apiExample {js} Javascript
- *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1", {
+ *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/34", {
  *      method: "DELETE"
  *     })
  *       .then((response) => {
