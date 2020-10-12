@@ -29,7 +29,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Javascript",
-        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops\", {\n method: \"POST\",\n body: JSON.stringify({\n   name: \"Test\",\n   coorX: 12.53,\n   coorY: -11.20\n })\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
+        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops\", {\n method: \"POST\",\n headers: {\n   \"Content-Type\": \"application/json\"\n },\n body: JSON.stringify({\n   name: \"Test\",\n   coorX: 12.53,\n   coorY: -11.20\n })\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
         "type": "js"
       }
     ],
@@ -94,7 +94,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Javascript",
-        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1\", {\n method: \"DELETE\"\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
+        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/34\", {\n method: \"DELETE\"\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
         "type": "js"
       }
     ],
@@ -266,6 +266,13 @@ define({ "api": [
     "description": "<p>Update a record in a worksheet.</p>",
     "name": "Update",
     "group": "Endpoint",
+    "examples": [
+      {
+        "title": "Javascript",
+        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/130\", {\n method: \"PUT\",\n headers: {\n   \"Content-Type\": \"application/json\"\n },\n body: JSON.stringify({\n   name: \"My new name\",\n   coorX: 10.53,\n   coorY: -9.20\n })\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
+        "type": "js"
+      }
+    ],
     "parameter": {
       "fields": {
         "Parameter": [
@@ -293,13 +300,6 @@ define({ "api": [
         ]
       }
     },
-    "examples": [
-      {
-        "title": "Javascript",
-        "content": "fetch(\"https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/1\", {\n method: \"PUT\"\n})\n  .then((response) => {\n     return response.json();\n  })\n  .then((data) => {\n   console.log(data);\n  });",
-        "type": "js"
-      }
-    ],
     "success": {
       "fields": {
         "Success 200": [

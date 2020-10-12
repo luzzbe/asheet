@@ -268,6 +268,9 @@ exports.projectEndpointGet = asyncHandler(async (req, res) => {
  * @apiExample {js} Javascript
  *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops", {
  *      method: "POST",
+ *      headers: {
+ *        "Content-Type": "application/json"
+ *      },
  *      body: JSON.stringify({
  *        name: "Test",
  *        coorX: 12.53,
@@ -288,6 +291,7 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
   const { user, project, endpoint } = req;
 
   const reqData = req.body;
+  console.log(reqData);
   const data = [];
 
   endpoint.schema.forEach((label) => {
@@ -323,6 +327,9 @@ exports.projectEndpointPost = asyncHandler(async (req, res) => {
  * @apiExample {js} Javascript
  *     fetch("https://flasheet.co/api/5f817d32f8154a22b06a0477/busStops/130", {
  *      method: "PUT",
+ *      headers: {
+ *        "Content-Type": "application/json"
+ *      },
  *      body: JSON.stringify({
  *        name: "My new name",
  *        coorX: 10.53,
